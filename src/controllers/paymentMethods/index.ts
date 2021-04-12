@@ -48,9 +48,9 @@ export async function getPaymentMethodsByCategory(
   try {
     const { categoryId } = req.params;
 
-    const paymentMethods = await crypticbase.getPaymentMethodsByCategoryId(
+    const paymentMethods = await crypticbase.getPaymentMethodsByCategory(
       null,
-      BigInt(categoryId),
+      { id: categoryId },
       [],
     );
 
