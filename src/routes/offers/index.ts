@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { index, createOffer } from '@controllers/offer';
+import { index, createOffer } from '@controllers/offers';
 import { authenticateUser } from '@middlewares/authorization';
 
 const router = Router();

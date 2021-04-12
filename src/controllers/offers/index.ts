@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
-    console.log(req);
+    // console.log(req);
   } catch (err) {
     return res.status(500).send({
       status_code: 500,
@@ -21,11 +21,9 @@ export async function createOffer(
   res: Response,
 ): Promise<Response> {
   try {
-    const { cryptocurrency } = req.body;
-
+    // const { cryptocurrency } = req.body;
     // const newOffer = crypticbase.createOffer();
-
-    console.log(cryptocurrency);
+    // console.l;;og(cryptocurrency);
   } catch (err) {
     return res.status(500).send({
       status_code: 500,
