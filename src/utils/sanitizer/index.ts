@@ -76,3 +76,26 @@ export function sanitizeInputCreateOffer(
     trade_instructions_instructions: cleanTradeInstructionsInstructions,
   };
 }
+
+export function sanitizeInputGetOfferByVendor(getOfferObj: {
+  vendor_id: string;
+  payment_method_type: string;
+}): {
+  vendor_id: string;
+  payment_method_type: string;
+} {
+  const cleanVendorId: string = sanitizeHtml(getOfferObj.vendor_id, {
+    allowedTags: [],
+  }).trim();
+  const cleanPaymentMethodType: string = sanitizeHtml(
+    getOfferObj.payment_method_type,
+    {
+      allowedTags: [],
+    },
+  ).trim();
+
+  return {
+    vendor_id: cleanVendorId,
+    payment_method_type: cleanPaymentMethodType,
+  };
+}

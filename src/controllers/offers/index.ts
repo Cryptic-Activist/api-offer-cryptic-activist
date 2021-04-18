@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import CrypticBase from 'cryptic-base';
 
-import { sanitizeInputCreateOffer } from '@utils/sanitizer';
-import { validateInputCreateOffer } from '@utils/validators';
+import {
+  sanitizeInputCreateOffer,
+  sanitizeInputGetOfferByVendor,
+} from '@utils/sanitizer';
 
 import { ICreateOffer } from '../../interfaces/controllers/offer/index';
 
@@ -27,25 +29,7 @@ export async function createOffer(
   const offer: ICreateOffer = req.body;
 
   try {
-    const errors: string[] = [];
-
     const cleanReqBody = sanitizeInputCreateOffer(offer);
-
-    const validation = validateInputCreateOffer(cleanReqBody);
-
-    if (!validation.valid) {
-      validation.errors.forEach((errorMsg: string) => {
-        errors.push(errorMsg);
-      });
-    }
-
-    if (errors.length > 0) {
-      return res.status(400).send({
-        status_code: 400,
-        results: {},
-        errors,
-      });
-    }
 
     const newOffer = await crypticbase.createOffer({
       vendor_id: BigInt(cleanReqBody.vendor_id),
@@ -71,6 +55,38 @@ export async function createOffer(
     return res.status(200).send({
       status_code: 200,
       results: newOffer,
+      errors: [],
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status_code: 500,
+      results: {},
+      errors: [err.message],
+    });
+  }
+}
+
+export async function getOffersByVendor(
+  req: Request,
+  res: Response,
+): Promise<Response> {
+  const { vendor_id } = req.params;
+  const { payment_method_type } = req.query;
+
+  try {
+    const cleanReqBody = sanitizeInputGetOfferByVendor({
+      vendor_id,
+      payment_method_type: payment_method_type.toString(),
+    });
+
+    const offer = await crypticbase.getOffers(null, [], {
+      vendor_id: BigInt(cleanReqBody.vendor_id),
+      payment_method_type: cleanReqBody.payment_method_type,
+    });
+
+    return res.status(200).send({
+      status_code: 200,
+      results: offer,
       errors: [],
     });
   } catch (err) {
