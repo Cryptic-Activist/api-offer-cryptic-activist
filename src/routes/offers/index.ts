@@ -1,6 +1,11 @@
 import { Router } from 'express';
 
-import { index, createOffer, getOffersByVendor } from '@controllers/offers';
+import {
+  index,
+  indexPagination,
+  createOffer,
+  getOffersByVendor,
+} from '@controllers/offers';
 
 import { authenticateUser } from '@middlewares/authorization';
 import {
@@ -12,6 +17,8 @@ import {
 const router = Router();
 
 router.get('', validateInputIndex, index);
+
+router.get('/pagination', validateInputIndex, indexPagination);
 
 router.post('/create', authenticateUser, validateInputCreateOffer, createOffer);
 

@@ -11,10 +11,42 @@ import { ICreateOffer } from '../../interfaces/controllers/offer/index';
 const crypticbase = new CrypticBase(false);
 
 export async function index(req: Request, res: Response): Promise<Response> {
-  // const { limit, skip, payment_method_type } = req.query;
+  try {
+    const offers = await crypticbase.getOffers(null, ['payment_method']);
+
+    return res.status(200).send({
+      status_code: 200,
+      results: offers,
+      errors: [],
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status_code: 500,
+      results: {},
+      errors: [err.message],
+    });
+  }
+}
+
+export async function indexPagination(
+  req: Request,
+  res: Response,
+): Promise<Response> {
+  const { limit, skip, payment_method_type } = req.query;
 
   try {
-    console.log('test');
+    const offers = await crypticbase.getOffersPagination(
+      Number(limit),
+      Number(skip),
+      ['vendor', 'cryptocurrency', 'payment_method'],
+      { payment_method_type },
+    );
+
+    return res.status(200).send({
+      status_code: 200,
+      results: offers,
+      errors: [],
+    });
   } catch (err) {
     return res.status(500).send({
       status_code: 500,
