@@ -11,8 +11,10 @@ import { ICreateOffer } from '../../interfaces/controllers/offer/index';
 const crypticbase = new CrypticBase(false);
 
 export async function index(req: Request, res: Response): Promise<Response> {
+  // const { limit, skip, payment_method_type } = req.query;
+
   try {
-    // console.log(req);
+    console.log('test');
   } catch (err) {
     return res.status(500).send({
       status_code: 500,

@@ -1,5 +1,57 @@
 import { Request, Response, NextFunction } from 'express';
 
+export function validateInputIndex(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): NextFunction | Response {
+  const { limit, skip, payment_method_type } = req.query;
+
+  const errors: string[] = [];
+
+  if (!limit) {
+    errors.push('limit is required.');
+  } else if (limit.length === 0) {
+    errors.push('limit must be valid.');
+  }
+
+  try {
+    Number(limit);
+  } catch (err) {
+    errors.push('limit must be a number');
+  }
+
+  if (!skip) {
+    errors.push('skip is required.');
+  } else if (skip.length === 0) {
+    errors.push('skip must be valid.');
+  }
+
+  try {
+    Number(skip);
+  } catch (err) {
+    errors.push('skip must be a number');
+  }
+
+  if (!payment_method_type) {
+    errors.push('payment_method_type is required.');
+  } else if (payment_method_type.length === 0) {
+    errors.push('payment_method_type must be valid.');
+  } else if (payment_method_type !== 'buy' && payment_method_type !== 'sell') {
+    errors.push('payment_method_type must be"buy" or "sell".');
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).send({
+      status_code: 400,
+      results: {},
+      errors,
+    });
+  }
+
+  next();
+}
+
 export function validateInputCreateOffer(
   req: Request,
   res: Response,

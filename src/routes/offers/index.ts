@@ -4,13 +4,14 @@ import { index, createOffer, getOffersByVendor } from '@controllers/offers';
 
 import { authenticateUser } from '@middlewares/authorization';
 import {
+  validateInputIndex,
   validateInputCreateOffer,
   validateGetOfferByVendorRequest,
 } from '@middlewares/validators/request/offers';
 
 const router = Router();
 
-router.get('', index);
+router.get('', validateInputIndex, index);
 
 router.post('/create', authenticateUser, validateInputCreateOffer, createOffer);
 
