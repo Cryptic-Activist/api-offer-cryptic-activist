@@ -15,6 +15,7 @@ export interface ICreateOffer {
   cryptocurrency_id: string;
   payment_method_type: 'buy' | 'sell';
   payment_method_id: string;
+  fiat_id: string;
   trade_pricing_type: 'market' | 'fixed';
   trade_pricing_list_at: number;
   trade_pricing_trade_limits_min: number;
@@ -31,6 +32,7 @@ export interface ISanitizedCreateOffer {
   cryptocurrency_id: string;
   payment_method_type: string;
   payment_method_id: string;
+  fiat_id: string;
   trade_pricing_type: string;
   trade_pricing_list_at: number;
   trade_pricing_trade_limits_min: number;

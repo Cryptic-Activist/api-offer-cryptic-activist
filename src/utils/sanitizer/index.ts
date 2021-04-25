@@ -34,10 +34,14 @@ export function sanitizeInputCreateOffer(
       allowedTags: [],
     },
   ).trim();
+  const cleanFiatId: string = sanitizeHtml(createOfferObj.fiat_id, {
+    allowedTags: [],
+  }).trim();
   const cleanTradeInstructionsTags: string[] = createOfferObj.trade_instructions_tags.map(
-    (tag) => sanitizeHtml(tag, {
-      allowedTags: [],
-    }).trim(),
+    (tag) =>
+      sanitizeHtml(tag, {
+        allowedTags: [],
+      }).trim(),
   );
   const cleanTradeInstructionsLabel: string = sanitizeHtml(
     createOfferObj.trade_instructions_label,
@@ -63,6 +67,7 @@ export function sanitizeInputCreateOffer(
     cryptocurrency_id: cleanCryptocurrencyId,
     payment_method_type: cleanPaymentMethodType,
     payment_method_id: cleanPaymentMethodId,
+    fiat_id: cleanFiatId,
     trade_pricing_type: cleanTradePricingType,
     trade_pricing_list_at: createOfferObj.trade_pricing_list_at,
     trade_pricing_trade_limits_min:
@@ -97,5 +102,19 @@ export function sanitizeInputGetOfferByVendor(getOfferObj: {
   return {
     vendor_id: cleanVendorId,
     payment_method_type: cleanPaymentMethodType,
+  };
+}
+
+export function sanitizeInputGetOfferById(getOfferObj: {
+  offer_id: string;
+}): {
+  offer_id: string;
+} {
+  const cleanOfferId: string = sanitizeHtml(getOfferObj.offer_id, {
+    allowedTags: [],
+  }).trim();
+
+  return {
+    offer_id: cleanOfferId,
   };
 }

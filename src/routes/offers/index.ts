@@ -5,22 +5,31 @@ import {
   indexPagination,
   createOffer,
   getOffersByVendor,
+  getOfferById,
 } from '@controllers/offers';
 
 import { authenticateUser } from '@middlewares/authorization';
 import {
-  validateInputIndex,
+  validateInputIndexPagination,
   validateInputCreateOffer,
   validateGetOfferByVendorRequest,
+  validateInputGetOfferById,
 } from '@middlewares/validators/request/offers';
 
 const router = Router();
 
-router.get('', validateInputIndex, index);
+router.get('', index);
 
-router.get('/pagination', validateInputIndex, indexPagination);
+router.get('/pagination', validateInputIndexPagination, indexPagination);
 
 router.post('/create', authenticateUser, validateInputCreateOffer, createOffer);
+
+router.get(
+  '/:offer_id',
+  authenticateUser,
+  validateInputGetOfferById,
+  getOfferById,
+);
 
 router.get(
   '/get/:vendor_id',

@@ -4,6 +4,7 @@ import CrypticBase from 'cryptic-base';
 import {
   sanitizeInputCreateOffer,
   sanitizeInputGetOfferByVendor,
+  sanitizeInputGetOfferById,
 } from '@utils/sanitizer';
 
 import { ICreateOffer } from '../../interfaces/controllers/offer/index';
@@ -12,7 +13,12 @@ const crypticbase = new CrypticBase(false);
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
-    const offers = await crypticbase.getOffers(null, ['payment_method']);
+    const offers = await crypticbase.getOffers(null, [
+      'vendor',
+      'cryptocurrency',
+      'fiat',
+      'payment_method',
+    ]);
 
     return res.status(200).send({
       status_code: 200,
@@ -38,7 +44,7 @@ export async function indexPagination(
     const offers = await crypticbase.getOffersPagination(
       Number(limit),
       Number(skip),
-      ['vendor', 'cryptocurrency', 'payment_method'],
+      ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
       { payment_method_type },
     );
 
@@ -73,6 +79,7 @@ export async function createOffer(
       payment_method_id: BigInt(cleanReqBody.payment_method_id),
       // @ts-ignore
       trade_pricing_type: cleanReqBody.trade_pricing_type,
+      fiat_id: BigInt(cleanReqBody.fiat_id),
       trade_pricing_list_at: cleanReqBody.trade_pricing_list_at,
       trade_pricing_trade_limits_min:
         cleanReqBody.trade_pricing_trade_limits_min,
@@ -92,6 +99,7 @@ export async function createOffer(
       errors: [],
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).send({
       status_code: 500,
       results: {},
@@ -113,10 +121,46 @@ export async function getOffersByVendor(
       payment_method_type: payment_method_type.toString(),
     });
 
-    const offer = await crypticbase.getOffers(null, [], {
-      vendor_id: BigInt(cleanReqBody.vendor_id),
-      payment_method_type: cleanReqBody.payment_method_type,
+    const offers = await crypticbase.getOffers(
+      null,
+      ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
+      {
+        vendor_id: BigInt(cleanReqBody.vendor_id),
+        payment_method_type: cleanReqBody.payment_method_type,
+      },
+    );
+
+    return res.status(200).send({
+      status_code: 200,
+      results: offers,
+      errors: [],
     });
+  } catch (err) {
+    return res.status(500).send({
+      status_code: 500,
+      results: {},
+      errors: [err.message],
+    });
+  }
+}
+
+export async function getOfferById(
+  req: Request,
+  res: Response,
+): Promise<Response> {
+  const { offer_id } = req.params;
+
+  try {
+    const cleanReqBody = sanitizeInputGetOfferById({
+      offer_id,
+    });
+
+    const offer = await crypticbase.getOffer({ id: cleanReqBody.offer_id }, [
+      'vendor',
+      'cryptocurrency',
+      'fiat',
+      'payment_method',
+    ]);
 
     return res.status(200).send({
       status_code: 200,

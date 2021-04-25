@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export function validateInputIndex(
+export function validateInputIndexPagination(
   req: Request,
   res: Response,
   next: NextFunction,
@@ -62,6 +62,7 @@ export function validateInputCreateOffer(
     cryptocurrency_id,
     payment_method_type,
     payment_method_id,
+    fiat_id,
     trade_pricing_type,
     trade_pricing_list_at,
     trade_pricing_trade_limits_min,
@@ -97,6 +98,12 @@ export function validateInputCreateOffer(
     errors.push('payment_method_id is required.');
   } else if (payment_method_id.length === 0) {
     errors.push('payment_method_id must be valid.');
+  }
+
+  if (!fiat_id) {
+    errors.push('fiat_id is required.');
+  } else if (fiat_id.length === 0) {
+    errors.push('fiat_id must be valid.');
   }
 
   if (!trade_pricing_type) {
@@ -147,8 +154,6 @@ export function validateInputCreateOffer(
       'trade_pricing_trade_limits_max must be greater than trade_pricing_trade_limits_min.',
     );
   }
-
-  console.log('trade_pricing_time_limit TEST:', trade_pricing_time_limit);
 
   if (!trade_pricing_time_limit) {
     errors.push('trade_pricing_time_limit is required.');
@@ -219,6 +224,32 @@ export function validateGetOfferByVendorRequest(
     errors.push('payment_method_type is required.');
   } else if (payment_method_type.length === 0) {
     errors.push('payment_method_type must be valid.');
+  }
+
+  if (errors.length > 0) {
+    return res.status(400).send({
+      status_code: 400,
+      results: {},
+      errors,
+    });
+  }
+
+  next();
+}
+
+export function validateInputGetOfferById(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): NextFunction | Response {
+  const { offer_id } = req.params;
+
+  const errors: string[] = [];
+
+  if (!offer_id) {
+    errors.push('offer_id is required.');
+  } else if (offer_id.length === 0) {
+    errors.push('offer_id must be valid.');
   }
 
   if (errors.length > 0) {
