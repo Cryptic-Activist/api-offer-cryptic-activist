@@ -1,13 +1,7 @@
 import { Request, Response } from 'express';
 import CrypticBase from 'cryptic-base';
 
-import {
-  sanitizeInputCreateOffer,
-  sanitizeInputGetOfferByVendor,
-  sanitizeInputGetOfferById,
-} from '@utils/sanitizer';
-
-import { ICreateOffer } from '../../interfaces/controllers/offer/index';
+import { sanitizeInputGetOffer } from '@utils/sanitizer';
 
 const crypticbase = new CrypticBase(false);
 
@@ -62,109 +56,73 @@ export async function indexPagination(
   }
 }
 
-export async function createOffer(
+export async function getOffers(
   req: Request,
   res: Response,
 ): Promise<Response> {
-  const offer: ICreateOffer = req.body;
+  const {
+    id,
+    vendor_id,
+    cryptocurrency_id,
+    payment_method_id,
+    fiat_id,
+    payment_method_type,
+    trade_pricing_type,
+    trade_pricing_list_at,
+    trade_pricing_trade_limits_min,
+    trade_pricing_trade_limits_max,
+    trade_pricing_time_limit,
+    trade_instructions_tags,
+    trade_instructions_label,
+    trade_instructions_terms,
+    trade_instructions_instructions,
+    is_deleted,
+    when_deleted,
+    created_at,
+    updated_at,
+  } = req.body;
 
   try {
-    const cleanReqBody = sanitizeInputCreateOffer(offer);
-
-    const newOffer = await crypticbase.createOffer({
-      vendor_id: BigInt(cleanReqBody.vendor_id),
-      cryptocurrency_id: BigInt(cleanReqBody.cryptocurrency_id),
-      // @ts-ignore
-      payment_method_type: cleanReqBody.payment_method_type,
-      payment_method_id: BigInt(cleanReqBody.payment_method_id),
-      // @ts-ignore
-      trade_pricing_type: cleanReqBody.trade_pricing_type,
-      fiat_id: BigInt(cleanReqBody.fiat_id),
-      trade_pricing_list_at: cleanReqBody.trade_pricing_list_at,
-      trade_pricing_trade_limits_min:
-        cleanReqBody.trade_pricing_trade_limits_min,
-      trade_pricing_trade_limits_max:
-        cleanReqBody.trade_pricing_trade_limits_max,
-      trade_pricing_time_limit: cleanReqBody.trade_pricing_time_limit,
-      trade_instructions_tags: cleanReqBody.trade_instructions_tags,
-      trade_instructions_label: cleanReqBody.trade_instructions_label,
-      trade_instructions_terms: cleanReqBody.trade_instructions_terms,
-      trade_instructions_instructions:
-        cleanReqBody.trade_instructions_instructions,
-    });
-
-    return res.status(200).send({
-      status_code: 200,
-      results: newOffer,
-      errors: [],
-    });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send({
-      status_code: 500,
-      results: {},
-      errors: [err.message],
-    });
-  }
-}
-
-export async function getOffersByVendor(
-  req: Request,
-  res: Response,
-): Promise<Response> {
-  const { vendor_id } = req.params;
-  const { payment_method_type } = req.query;
-
-  try {
-    const cleanReqBody = sanitizeInputGetOfferByVendor({
+    const cleanReqBody = sanitizeInputGetOffer({
+      id,
       vendor_id,
-      payment_method_type: payment_method_type.toString(),
+      cryptocurrency_id,
+      payment_method_id,
+      fiat_id,
+      payment_method_type,
+      trade_pricing_type,
+      trade_pricing_list_at,
+      trade_pricing_trade_limits_min,
+      trade_pricing_trade_limits_max,
+      trade_pricing_time_limit,
+      trade_instructions_tags,
+      trade_instructions_label,
+      trade_instructions_terms,
+      trade_instructions_instructions,
+      is_deleted,
+      when_deleted,
+      created_at,
+      updated_at,
     });
 
     const offers = await crypticbase.getOffers(
       null,
       ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
-      {
-        vendor_id: BigInt(cleanReqBody.vendor_id),
-        payment_method_type: cleanReqBody.payment_method_type,
-      },
+      // @ts-ignore
+      cleanReqBody,
     );
+
+    if (!offers) {
+      return res.status(204).send({
+        status_code: 204,
+        results: offers,
+        errors: [],
+      });
+    }
 
     return res.status(200).send({
       status_code: 200,
       results: offers,
-      errors: [],
-    });
-  } catch (err) {
-    return res.status(500).send({
-      status_code: 500,
-      results: {},
-      errors: [err.message],
-    });
-  }
-}
-
-export async function getOfferById(
-  req: Request,
-  res: Response,
-): Promise<Response> {
-  const { offer_id } = req.params;
-
-  try {
-    const cleanReqBody = sanitizeInputGetOfferById({
-      offer_id,
-    });
-
-    const offer = await crypticbase.getOffer({ id: cleanReqBody.offer_id }, [
-      'vendor',
-      'cryptocurrency',
-      'fiat',
-      'payment_method',
-    ]);
-
-    return res.status(200).send({
-      status_code: 200,
-      results: offer,
       errors: [],
     });
   } catch (err) {

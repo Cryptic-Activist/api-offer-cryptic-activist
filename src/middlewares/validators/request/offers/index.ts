@@ -198,58 +198,147 @@ export function validateInputCreateOffer(
   next();
 }
 
-export function validateGetOfferByVendorRequest(
+export function validateInputGetOffer(
   req: Request,
   res: Response,
   next: NextFunction,
 ): NextFunction | Response {
-  const { vendor_id } = req.params;
-  const { payment_method_type } = req.query;
+  const {
+    id,
+    vendor_id,
+    cryptocurrency_id,
+    payment_method_id,
+    fiat_id,
+    payment_method_type,
+    trade_pricing_type,
+    trade_pricing_list_at,
+    trade_pricing_trade_limits_min,
+    trade_pricing_trade_limits_max,
+    trade_pricing_time_limit,
+    trade_instructions_tags,
+    trade_instructions_label,
+    trade_instructions_terms,
+    trade_instructions_instructions,
+    is_deleted,
+    when_deleted,
+    created_at,
+    updated_at,
+  } = req.query;
 
   const errors: string[] = [];
 
-  if (!vendor_id) {
-    errors.push('vendor_id is required.');
-  } else if (vendor_id.length === 0) {
-    errors.push('vendor_id must be valid.');
+  if (id) {
+    if (id.length === 0) {
+      errors.push('id must be valid.');
+    }
   }
 
-  try {
-    BigInt(vendor_id);
-  } catch (err) {
-    errors.push('vendor_id must be valid.');
+  if (vendor_id) {
+    if (vendor_id.length === 0) {
+      errors.push('vendor_id must be valid.');
+    }
   }
 
-  if (!payment_method_type) {
-    errors.push('payment_method_type is required.');
-  } else if (payment_method_type.length === 0) {
-    errors.push('payment_method_type must be valid.');
+  if (cryptocurrency_id) {
+    if (cryptocurrency_id.length === 0) {
+      errors.push('cryptocurrency_id must be valid.');
+    }
   }
 
-  if (errors.length > 0) {
-    return res.status(400).send({
-      status_code: 400,
-      results: {},
-      errors,
-    });
+  if (payment_method_id) {
+    if (payment_method_id.length === 0) {
+      errors.push('payment_method_id must be valid.');
+    }
   }
 
-  next();
-}
+  if (fiat_id) {
+    if (fiat_id.length === 0) {
+      errors.push('fiat_id must be valid.');
+    }
+  }
 
-export function validateInputGetOfferById(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): NextFunction | Response {
-  const { offer_id } = req.params;
+  if (payment_method_type) {
+    if (payment_method_type.length === 0) {
+      errors.push('payment_method_type must be valid.');
+    }
+  }
 
-  const errors: string[] = [];
+  if (trade_pricing_type) {
+    if (trade_pricing_type.length === 0) {
+      errors.push('trade_pricing_type must be valid.');
+    }
+  }
 
-  if (!offer_id) {
-    errors.push('offer_id is required.');
-  } else if (offer_id.length === 0) {
-    errors.push('offer_id must be valid.');
+  if (trade_pricing_list_at) {
+    if (trade_pricing_list_at.length === 0) {
+      errors.push('trade_pricing_list_at must be valid.');
+    }
+  }
+
+  if (trade_pricing_trade_limits_min) {
+    if (trade_pricing_trade_limits_min.length === 0) {
+      errors.push('trade_pricing_trade_limits_min must be valid.');
+    }
+  }
+
+  if (trade_pricing_trade_limits_max) {
+    if (trade_pricing_trade_limits_max.length === 0) {
+      errors.push('trade_pricing_trade_limits_max must be valid.');
+    }
+  }
+
+  if (trade_pricing_time_limit) {
+    if (trade_pricing_time_limit.length === 0) {
+      errors.push('trade_pricing_time_limit must be valid.');
+    }
+  }
+
+  if (trade_instructions_tags) {
+    if (trade_instructions_tags.length === 0) {
+      errors.push('trade_instructions_tags must be valid.');
+    }
+  }
+
+  if (trade_instructions_label) {
+    if (trade_instructions_label.length === 0) {
+      errors.push('trade_instructions_label must be valid.');
+    }
+  }
+
+  if (trade_instructions_terms) {
+    if (trade_instructions_terms.length === 0) {
+      errors.push('trade_instructions_terms must be valid.');
+    }
+  }
+
+  if (trade_instructions_instructions) {
+    if (trade_instructions_instructions.length === 0) {
+      errors.push('trade_instructions_instructions must be valid.');
+    }
+  }
+
+  if (is_deleted) {
+    if (is_deleted.length === 0) {
+      errors.push('is_deleted must be valid.');
+    }
+  }
+
+  if (when_deleted) {
+    if (when_deleted.length === 0) {
+      errors.push('when_deleted must be valid.');
+    }
+  }
+
+  if (created_at) {
+    if (created_at.length === 0) {
+      errors.push('created_at must be valid.');
+    }
+  }
+
+  if (updated_at) {
+    if (updated_at.length === 0) {
+      errors.push('updated_at must be valid.');
+    }
   }
 
   if (errors.length > 0) {

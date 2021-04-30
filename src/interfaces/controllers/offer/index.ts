@@ -43,3 +43,61 @@ export interface ISanitizedCreateOffer {
   trade_instructions_terms: string;
   trade_instructions_instructions: string;
 }
+
+export interface ISanitizedGetOffer {
+  id?: string;
+  vendor_id?: string;
+  cryptocurrency_id?: string;
+  payment_method_type?: string;
+  payment_method_id?: string;
+  fiat_id?: string;
+  trade_pricing_type?: string;
+  trade_pricing_list_at?: number;
+  trade_pricing_trade_limits_min?: number;
+  trade_pricing_trade_limits_max?: number;
+  trade_pricing_time_limit?: number;
+  trade_instructions_tags?: string[];
+  trade_instructions_label?: string;
+  trade_instructions_terms?: string;
+  trade_instructions_instructions?: string;
+  is_deleted?: boolean;
+  when_deleted?: null | Date;
+  created_at?: Date;
+  updated_at?: null | Date;
+}
+
+export interface ISanitizedGetOfferReturn {
+  id?: BigInt;
+  vendor_id?: BigInt;
+  cryptocurrency_id?: BigInt;
+  payment_method_type?: string;
+  payment_method_id?: BigInt;
+  fiat_id?: BigInt;
+  trade_pricing_type?: string;
+  trade_pricing_list_at?: number;
+  trade_pricing_trade_limits_min?: number;
+  trade_pricing_trade_limits_max?: number;
+  trade_pricing_time_limit?: number;
+  trade_instructions_tags?: string[];
+  trade_instructions_label?: string;
+  trade_instructions_terms?: string;
+  trade_instructions_instructions?: string;
+}
+
+export interface ISanitizedInputCountFeedbacks {
+  id?: string;
+  vendor_id?: string;
+  user_id?: string;
+  offer_id?: string;
+  message?: string;
+  type?: string;
+}
+
+export interface ISanitizedInputCountFeedbacksReturn {
+  id?: BigInt;
+  vendor_id?: BigInt;
+  user_id?: BigInt;
+  offer_id?: BigInt;
+  message?: string;
+  type?: string;
+}
