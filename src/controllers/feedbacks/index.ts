@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import CrypticBase from 'cryptic-base';
 
 import { sanitizeInputCountFeedbacks } from '@utils/sanitizer';
+import { sanitizeInputIndexFeedbackPagination } from '@utils/sanitizer/feedbacks';
 
 const crypticbase = new CrypticBase(false);
 
@@ -45,6 +46,44 @@ export async function indexFeedbacks(
   try {
     // @ts-ignore
     const feedbacks = await crypticbase.getFeedbacks(null, []);
+
+    return res.status(200).send({
+      status_code: 200,
+      results: feedbacks,
+      errors: [],
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status_code: 500,
+      results: {},
+      errors: [err.message],
+    });
+  }
+}
+
+export async function indexFeedbacksPagination(
+  req: Request,
+  res: Response,
+): Promise<Response> {
+  try {
+    const { limit, skip } = req.query;
+    const { vendor_id, user_id, offer_id, message, type } = req.body;
+
+    const cleanReqBody = sanitizeInputIndexFeedbackPagination(
+      {
+        limit: limit.toString(),
+        skip: skip.toString(),
+      },
+      { vendor_id, user_id, offer_id, message, type },
+    );
+
+    const feedbacks = await crypticbase.getFeedbacksPagination(
+      cleanReqBody.query.limit,
+      cleanReqBody.query.skip,
+      ['user', 'offer'],
+      // @ts-ignore
+      cleanReqBody.feedback,
+    );
 
     return res.status(200).send({
       status_code: 200,
