@@ -101,3 +101,47 @@ export interface ISanitizedInputCountFeedbacksReturn {
   message?: string;
   type?: string;
 }
+
+export interface ICryptocurrency {
+  id: BigInt;
+  icon: string;
+  name: string;
+  symbol: string;
+}
+
+export interface IFiat {
+  id: BigInt;
+  name: string;
+  symbol: string;
+}
+
+export interface IPaymentMethod {
+  name: string;
+}
+
+export interface IVendor {
+  id: BigInt;
+  names: {
+    first_name: string;
+    last_name: string;
+  },
+  username: string;
+}
+
+export interface IOffer {
+  id: BigInt;
+  payment_method_type: string;
+  trade_instructions_instructions: string;
+  trade_instructions_label: string;
+  trade_instructions_tags: string[];
+  trade_instructions_terms: string;
+  trade_pricing_list_at: number;
+  trade_pricing_time_limit: number;
+  trade_pricing_trade_limits_max: number;
+  trade_pricing_trade_limits_min: number;
+  trade_pricing_type: string;
+  cryptocurrency?: ICryptocurrency;
+  fiat?: IFiat;
+  payment_method?: IPaymentMethod;
+  vendor?: IVendor;
+}

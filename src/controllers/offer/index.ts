@@ -6,7 +6,7 @@ import {
   sanitizeInputGetOffer,
 } from '@utils/sanitizer';
 
-import { ICreateOffer } from '../../interfaces/controllers/offer/index';
+import { ICreateOffer, IOffer } from '../../interfaces/controllers/offer/index';
 
 const crypticbase = new CrypticBase(false);
 
@@ -109,17 +109,50 @@ export async function getOffer(req: Request, res: Response): Promise<Response> {
       'payment_method',
     ]);
 
+    const offerResponse: IOffer = {
+      id: offer.id,
+      payment_method_type: offer.payment_method_type,
+      trade_instructions_instructions: offer.trade_instructions_instructions,
+      trade_instructions_label: offer.trade_instructions_label,
+      trade_instructions_tags: offer.trade_instructions_tags,
+      trade_instructions_terms: offer.trade_instructions_terms,
+      trade_pricing_list_at: offer.trade_pricing_list_at,
+      trade_pricing_time_limit: offer.trade_pricing_time_limit,
+      trade_pricing_trade_limits_max: offer.trade_pricing_trade_limits_max,
+      trade_pricing_trade_limits_min: offer.trade_pricing_trade_limits_min,
+      trade_pricing_type: offer.trade_pricing_type,
+      cryptocurrency: {
+        id: offer.cryptocurrency.id,
+        icon: offer.cryptocurrency.icon,
+        name: offer.cryptocurrency.name,
+        symbol: offer.cryptocurrency.symbol,
+      },
+      fiat: {
+        id: offer.fiat.id,
+        name: offer.fiat.name,
+        symbol: offer.fiat.symbol,
+      },
+      vendor: {
+        id: offer.vendor.id,
+        username: offer.vendor.username,
+        names: {
+          first_name: offer.vendor.first_name,
+          last_name: offer.vendor.last_name,
+        },
+      },
+    };
+
     if (!offer) {
       return res.status(204).send({
         status_code: 204,
-        results: offer,
+        results: {},
         errors: [],
       });
     }
 
     return res.status(200).send({
       status_code: 200,
-      results: offer,
+      results: offerResponse,
       errors: [],
     });
   } catch (err) {
