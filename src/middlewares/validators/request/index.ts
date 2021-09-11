@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { validate } from 'cryptic-utils';
 
 export function validateInputCreatePaymentMethodCategory(
   req: Request,
@@ -7,13 +8,7 @@ export function validateInputCreatePaymentMethodCategory(
 ): NextFunction | Response {
   const { name } = req.body;
 
-  const errors: string[] = [];
-
-  if (!name) {
-    errors.push('name is required.');
-  } else if (name.length === 0) {
-    errors.push('name must be valid.');
-  }
+  const errors: string[] = validate({ name }, { name: 'string' });
 
   if (errors.length > 0) {
     return res.status(400).send({

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import CrypticBase from 'cryptic-base';
+import { sanitize } from 'cryptic-utils';
 
 const crypticbase = new CrypticBase(false);
 
@@ -30,9 +31,11 @@ export async function createPaymentMethodCategory(
   try {
     const { name } = req.body;
 
+    const cleanName = sanitize(name);
+
     const newPaymentMethodCategory = await crypticbase.createPaymentMethodCategory(
       {
-        name,
+        name: cleanName,
       },
     );
 

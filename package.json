@@ -9,8 +9,7 @@
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
     "start": "node dist/server.js",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify src/server.ts",
-    "refresh:yarn": "rm -rf ./node_modules ./yarn.lock ./yarn-error.log && yarn install",
-    "refresh:npm": "rm -rf ./node_modules ./package-lock.json && npm install"
+    "refresh": "rm -rf ./node_modules ./yarn.lock ./yarn-error.log && yarn install"
   },
   "husky": {
     "hooks": {
@@ -79,17 +78,16 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
     "chalk": "^4.1.1",
     "cors": "^2.8.5",
-    "cryptic-base": "^1.8.5",
+    "cryptic-base": "^1.9.0",
+    "cryptic-utils": "^1.2.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
     "morgan": "^1.10.0",
-    "node-fetch": "^2.6.1",
     "sanitize-html": "^2.3.0",
     "slugify": "^1.4.7",
     "unique-names-generator": "^4.3.1",

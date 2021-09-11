@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import CrypticBase from 'cryptic-base';
-
-import { sanitizeInputCreateFeedback } from '@utils/sanitizer/feedback';
+import { sanitize } from 'cryptic-utils';
 
 const crypticbase = new CrypticBase(false);
 
@@ -11,7 +10,7 @@ export async function createFeedback(
 ): Promise<Response> {
   const { vendor_id, user_id, offer_id, message, type } = req.body;
 
-  const cleanReqBody = sanitizeInputCreateFeedback({
+  const cleanReqBody = sanitize({
     vendor_id,
     user_id,
     offer_id,

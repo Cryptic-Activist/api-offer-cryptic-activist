@@ -1,10 +1,6 @@
 import { Request, Response } from 'express';
 import CrypticBase from 'cryptic-base';
-
-import {
-  sanitizeInputCreateOffer,
-  sanitizeInputGetOffer,
-} from '@utils/sanitizer';
+import { sanitize } from 'cryptic-utils';
 
 import { ICreateOffer, IOffer } from '../../interfaces/controllers/offer/index';
 
@@ -14,10 +10,41 @@ export async function createOffer(
   req: Request,
   res: Response,
 ): Promise<Response> {
-  const offer: ICreateOffer = req.body;
+  const {
+    vendor_id,
+    cryptocurrency_id,
+    payment_method_id,
+    fiat_id,
+    payment_method_type,
+    trade_pricing_type,
+    trade_pricing_list_at,
+    trade_pricing_trade_limits_min,
+    trade_pricing_trade_limits_max,
+    trade_pricing_time_limit,
+    trade_instructions_tags,
+    trade_instructions_label,
+    trade_instructions_terms,
+    trade_instructions_instructions,
+  }: ICreateOffer = req.body;
 
   try {
-    const cleanReqBody = sanitizeInputCreateOffer(offer);
+    const cleanReqBody = sanitize({
+      vendor_id,
+      cryptocurrency_id,
+      payment_method_id,
+      fiat_id,
+      payment_method_type,
+      trade_pricing_type,
+      trade_pricing_list_at,
+      trade_pricing_trade_limits_min,
+      trade_pricing_trade_limits_max,
+      trade_pricing_time_limit,
+      trade_instructions_label,
+      trade_instructions_terms,
+      trade_instructions_instructions,
+    });
+
+    const tags = sanitize(trade_instructions_tags);
 
     const newOffer = await crypticbase.createOffer({
       vendor_id: BigInt(cleanReqBody.vendor_id),
@@ -34,7 +61,7 @@ export async function createOffer(
       trade_pricing_trade_limits_max:
         cleanReqBody.trade_pricing_trade_limits_max,
       trade_pricing_time_limit: cleanReqBody.trade_pricing_time_limit,
-      trade_instructions_tags: cleanReqBody.trade_instructions_tags,
+      trade_instructions_tags: tags,
       trade_instructions_label: cleanReqBody.trade_instructions_label,
       trade_instructions_terms: cleanReqBody.trade_instructions_terms,
       trade_instructions_instructions:
@@ -79,7 +106,7 @@ export async function getOffer(req: Request, res: Response): Promise<Response> {
   } = req.body;
 
   try {
-    const cleanReqBody = sanitizeInputGetOffer({
+    const cleanReqBody = sanitize({
       id,
       vendor_id,
       cryptocurrency_id,
@@ -91,7 +118,6 @@ export async function getOffer(req: Request, res: Response): Promise<Response> {
       trade_pricing_trade_limits_min,
       trade_pricing_trade_limits_max,
       trade_pricing_time_limit,
-      trade_instructions_tags,
       trade_instructions_label,
       trade_instructions_terms,
       trade_instructions_instructions,
@@ -101,7 +127,8 @@ export async function getOffer(req: Request, res: Response): Promise<Response> {
       updated_at,
     });
 
-    // @ts-ignore
+    const tags = sanitize(trade_instructions_tags);
+
     const offer = await crypticbase.getOffer(cleanReqBody, [
       'vendor',
       'cryptocurrency',
@@ -114,7 +141,7 @@ export async function getOffer(req: Request, res: Response): Promise<Response> {
       payment_method_type: offer.payment_method_type,
       trade_instructions_instructions: offer.trade_instructions_instructions,
       trade_instructions_label: offer.trade_instructions_label,
-      trade_instructions_tags: offer.trade_instructions_tags,
+      trade_instructions_tags: tags,
       trade_instructions_terms: offer.trade_instructions_terms,
       trade_pricing_list_at: offer.trade_pricing_list_at,
       trade_pricing_time_limit: offer.trade_pricing_time_limit,

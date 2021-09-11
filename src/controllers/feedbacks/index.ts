@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import CrypticBase from 'cryptic-base';
-
-import { sanitizeInputCountFeedbacks } from '@utils/sanitizer';
-import { sanitizeInputIndexFeedbackPagination } from '@utils/sanitizer/feedbacks';
+import { sanitize } from 'cryptic-utils';
 
 const crypticbase = new CrypticBase(false);
 
@@ -13,7 +11,7 @@ export async function countFeedbacks(
   const { id, vendor_id, user_id, offer_id, message, type } = req.body;
 
   try {
-    const cleanReqBody = sanitizeInputCountFeedbacks({
+    const cleanReqBody = sanitize({
       id,
       vendor_id,
       user_id,
@@ -69,20 +67,15 @@ export async function indexFeedbacksPagination(
     const { limit, skip } = req.query;
     const { vendor_id, user_id, offer_id, message, type } = req.body;
 
-    const cleanReqBody = sanitizeInputIndexFeedbackPagination(
-      {
-        limit: limit.toString(),
-        skip: skip.toString(),
-      },
-      { vendor_id, user_id, offer_id, message, type },
-    );
+    const cleanReqQuery = sanitize({ limit: limit.toString(), skip: skip.toString() });
+    const cleanReqBody = sanitize({ vendor_id, user_id, offer_id, message, type });
 
     const feedbacks = await crypticbase.getFeedbacksPagination(
-      cleanReqBody.query.limit,
-      cleanReqBody.query.skip,
+      cleanReqQuery.limit,
+      cleanReqQuery.skip,
       ['user', 'offer'],
       // @ts-ignore
-      cleanReqBody.feedback,
+      cleanReqBody,
     );
 
     return res.status(200).send({
