@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
-import CrypticBase from 'cryptic-base';
+import { createPaymentMethod, getPaymentMethodsByCategory } from 'cryptic-base';
 import { sanitize } from 'cryptic-utils';
-
-const crypticbase = new CrypticBase(false);
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
@@ -16,7 +14,7 @@ export async function index(req: Request, res: Response): Promise<Response> {
   }
 }
 
-export async function createPaymentMethod(
+export async function createPaymentMethodController(
   req: Request,
   res: Response,
 ): Promise<Response> {
@@ -25,7 +23,7 @@ export async function createPaymentMethod(
 
     const cleanBody = sanitize({ name, categoryId });
 
-    const newPaymentMethod = await crypticbase.createPaymentMethod({
+    const newPaymentMethod = await createPaymentMethod({
       name: cleanBody.name,
       payment_method_category_id: BigInt(cleanBody.categoryId),
     });
@@ -44,7 +42,7 @@ export async function createPaymentMethod(
   }
 }
 
-export async function getPaymentMethodsByCategory(
+export async function getPaymentMethodsByCategoryController(
   req: Request,
   res: Response,
 ): Promise<Response> {
@@ -53,7 +51,7 @@ export async function getPaymentMethodsByCategory(
 
     const cleanCategoryId = sanitize(categoryId);
 
-    const paymentMethods = await crypticbase.getPaymentMethodsByCategory(
+    const paymentMethods = await getPaymentMethodsByCategory(
       null,
       { id: BigInt(cleanCategoryId) },
       [],

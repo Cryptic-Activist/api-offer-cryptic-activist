@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
-import CrypticBase from 'cryptic-base';
+import {
+  countFeedbacks,
+  getFeedbacks,
+  getFeedbacksPagination,
+} from 'cryptic-base';
 import { sanitize } from 'cryptic-utils';
 
-const crypticbase = new CrypticBase(false);
-
-export async function countFeedbacks(
+export async function countFeedbacksController(
   req: Request,
   res: Response,
 ): Promise<Response> {
@@ -21,7 +23,7 @@ export async function countFeedbacks(
     });
 
     // @ts-ignore
-    const counts = await crypticbase.countFeedbacks(cleanReqBody);
+    const counts = await countFeedbacks(cleanReqBody);
 
     return res.status(200).send({
       status_code: 200,
@@ -43,7 +45,7 @@ export async function indexFeedbacks(
 ): Promise<Response> {
   try {
     // @ts-ignore
-    const feedbacks = await crypticbase.getFeedbacks(null, []);
+    const feedbacks = await getFeedbacks(null, []);
 
     return res.status(200).send({
       status_code: 200,
@@ -67,10 +69,19 @@ export async function indexFeedbacksPagination(
     const { limit, skip } = req.query;
     const { vendor_id, user_id, offer_id, message, type } = req.body;
 
-    const cleanReqQuery = sanitize({ limit: limit.toString(), skip: skip.toString() });
-    const cleanReqBody = sanitize({ vendor_id, user_id, offer_id, message, type });
+    const cleanReqQuery = sanitize({
+      limit: limit.toString(),
+      skip: skip.toString(),
+    });
+    const cleanReqBody = sanitize({
+      vendor_id,
+      user_id,
+      offer_id,
+      message,
+      type,
+    });
 
-    const feedbacks = await crypticbase.getFeedbacksPagination(
+    const feedbacks = await getFeedbacksPagination(
       cleanReqQuery.limit,
       cleanReqQuery.skip,
       ['user', 'offer'],

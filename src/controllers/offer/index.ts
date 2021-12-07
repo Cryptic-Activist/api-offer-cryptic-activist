@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
-import CrypticBase from 'cryptic-base';
+import { createOffer, getOffer } from 'cryptic-base';
 import { sanitize } from 'cryptic-utils';
 
 import { ICreateOffer, IOffer } from '../../interfaces/controllers/offer/index';
 
-const crypticbase = new CrypticBase(false);
-
-export async function createOffer(
+export async function createOfferController(
   req: Request,
   res: Response,
 ): Promise<Response> {
@@ -46,7 +44,7 @@ export async function createOffer(
 
     const tags = sanitize(trade_instructions_tags);
 
-    const newOffer = await crypticbase.createOffer({
+    const newOffer = await createOffer({
       vendor_id: BigInt(cleanReqBody.vendor_id),
       cryptocurrency_id: BigInt(cleanReqBody.cryptocurrency_id),
       // @ts-ignore
@@ -82,7 +80,10 @@ export async function createOffer(
   }
 }
 
-export async function getOffer(req: Request, res: Response): Promise<Response> {
+export async function getOfferController(
+  req: Request,
+  res: Response,
+): Promise<Response> {
   const {
     id,
     vendor_id,
@@ -129,7 +130,7 @@ export async function getOffer(req: Request, res: Response): Promise<Response> {
 
     const tags = sanitize(trade_instructions_tags);
 
-    const offer = await crypticbase.getOffer(cleanReqBody, [
+    const offer = await getOffer(cleanReqBody, [
       'vendor',
       'cryptocurrency',
       'fiat',

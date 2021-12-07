@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import {
   indexFeedbacks,
-  countFeedbacks,
+  countFeedbacksController,
   indexFeedbacksPagination,
 } from '@controllers/feedbacks';
 
@@ -12,7 +12,7 @@ const router = Router();
 
 router.post('', indexFeedbacks);
 
-router.post('/count', validateInputCountFeedbacks, countFeedbacks);
+router.post('/count', validateInputCountFeedbacks, countFeedbacksController);
 
 router.post(
   '/pagination',

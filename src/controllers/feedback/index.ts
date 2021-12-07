@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
-import CrypticBase from 'cryptic-base';
+import { createFeedback } from 'cryptic-base';
 import { sanitize } from 'cryptic-utils';
 
-const crypticbase = new CrypticBase(false);
-
-export async function createFeedback(
+export async function createFeedbackController(
   req: Request,
   res: Response,
 ): Promise<Response> {
@@ -20,7 +18,7 @@ export async function createFeedback(
 
   try {
     // @ts-ignore
-    const feedback = await crypticbase.createFeedback({
+    const feedback = await createFeedback({
       vendor_id: cleanReqBody.vendor_id,
       user_id: cleanReqBody.user_id,
       offer_id: cleanReqBody.offer_id,

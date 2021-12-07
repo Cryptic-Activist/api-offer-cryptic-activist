@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { createOffer, getOffer } from '@controllers/offer';
+import { createOfferController, getOfferController } from '@controllers/offer';
 
 import { authenticateUser } from '@middlewares/authorization';
 import {
@@ -10,8 +10,13 @@ import {
 
 const router = Router();
 
-router.post('', validateInputGetOffer, getOffer);
+router.post('', validateInputGetOffer, getOfferController);
 
-router.post('/create', authenticateUser, validateInputCreateOffer, createOffer);
+router.post(
+  '/create',
+  authenticateUser,
+  validateInputCreateOffer,
+  createOfferController,
+);
 
 export default router;

@@ -1,14 +1,19 @@
 import { Request, Response } from 'express';
-import CrypticBase from 'cryptic-base';
+import {
+  getPaymentMethodCategories,
+  createPaymentMethodCategory,
+} from 'cryptic-base';
 import { sanitize } from 'cryptic-utils';
-
-const crypticbase = new CrypticBase(false);
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
-    const paymentMethodCategories = await crypticbase.getPaymentMethodCategories(
-      null,
-    );
+    const paymentMethodCategories = await getPaymentMethodCategories(null);
+
+    console.log({
+      status_code: 200,
+      results: paymentMethodCategories,
+      errors: [],
+    });
 
     return res.status(200).send({
       status_code: 200,
@@ -24,7 +29,7 @@ export async function index(req: Request, res: Response): Promise<Response> {
   }
 }
 
-export async function createPaymentMethodCategory(
+export async function createPaymentMethodCategoryController(
   req: Request,
   res: Response,
 ): Promise<Response> {
@@ -33,11 +38,9 @@ export async function createPaymentMethodCategory(
 
     const cleanName = sanitize(name);
 
-    const newPaymentMethodCategory = await crypticbase.createPaymentMethodCategory(
-      {
-        name: cleanName,
-      },
-    );
+    const newPaymentMethodCategory = await createPaymentMethodCategory({
+      name: cleanName,
+    });
 
     return res.status(200).send({
       status_code: 200,
@@ -60,7 +63,7 @@ export async function getPaymentMethodCategory(
   try {
     // const { id } = req.params;
 
-    // const paymentMethodCategories = await crypticbase.getPaymentMethodByCategory(
+    // const paymentMethodCategories = await getPaymentMethodByCategory(
     //   { id },
     //   ['payment_method_category'],
     // );

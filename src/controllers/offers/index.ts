@@ -1,12 +1,10 @@
 import { Request, Response } from 'express';
-import CrypticBase from 'cryptic-base';
+import { getOffers, getOffersPagination } from 'cryptic-base';
 import { sanitize } from 'cryptic-utils';
-
-const crypticbase = new CrypticBase(false);
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
-    const offers = await crypticbase.getOffers(null, [
+    const offers = await getOffers(null, [
       'vendor',
       'cryptocurrency',
       'fiat',
@@ -36,7 +34,7 @@ export async function indexPagination(
   const cleanQuery = sanitize({ limit, skip, payment_method_type });
 
   try {
-    const offers = await crypticbase.getOffersPagination(
+    const offers = await getOffersPagination(
       Number(cleanQuery.limit),
       Number(cleanQuery.skip),
       ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
@@ -57,7 +55,7 @@ export async function indexPagination(
   }
 }
 
-export async function getOffers(
+export async function getOffersController(
   req: Request,
   res: Response,
 ): Promise<Response> {
@@ -107,7 +105,7 @@ export async function getOffers(
 
     const tags = sanitize(trade_instructions_tags);
 
-    const offers = await crypticbase.getOffers(
+    const offers = await getOffers(
       null,
       ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
       {
@@ -119,13 +117,18 @@ export async function getOffers(
         fiat_id: BigInt(cleanReqBody.fiat_id),
         trade_pricing_type: cleanReqBody.trade_pricing_type,
         trade_pricing_list_at: Number(cleanReqBody.trade_pricing_list_at),
-        trade_pricing_trade_limits_min: Number(cleanReqBody.trade_pricing_trade_limits_min),
-        trade_pricing_trade_limits_max: Number(cleanReqBody.trade_pricing_trade_limits_max),
+        trade_pricing_trade_limits_min: Number(
+          cleanReqBody.trade_pricing_trade_limits_min,
+        ),
+        trade_pricing_trade_limits_max: Number(
+          cleanReqBody.trade_pricing_trade_limits_max,
+        ),
         trade_pricing_time_limit: Number(cleanReqBody.trade_pricing_time_limit),
         trade_instructions_tags: tags,
         trade_instructions_label: cleanReqBody.trade_instructions_label,
         trade_instructions_terms: cleanReqBody.trade_instructions_terms,
-        trade_instructions_instructions: cleanReqBody.trade_instructions_instructions,
+        trade_instructions_instructions:
+          cleanReqBody.trade_instructions_instructions,
       },
     );
 

@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import {
   index,
-  createPaymentMethodCategory,
+  createPaymentMethodCategoryController,
 } from '@controllers/paymentMethods/categories';
 
 import { authenticateUser } from '@middlewares/authorization';
@@ -16,7 +16,7 @@ router.post(
   '/create',
   authenticateUser,
   validateInputCreatePaymentMethodCategory,
-  createPaymentMethodCategory,
+  createPaymentMethodCategoryController,
 );
 
 export default router;

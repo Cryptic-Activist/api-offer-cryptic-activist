@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { createFeedback } from '@controllers/feedback';
+import { createFeedbackController } from '@controllers/feedback';
 
 import { authenticateUser } from '@middlewares/authorization';
 import { validateInputCreateFeedback } from '@middlewares/validators/request/feedback';
@@ -11,7 +11,7 @@ router.post(
   '/create',
   authenticateUser,
   validateInputCreateFeedback,
-  createFeedback,
+  createFeedbackController,
 );
 
 export default router;
