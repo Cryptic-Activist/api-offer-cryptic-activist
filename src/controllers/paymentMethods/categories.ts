@@ -9,12 +9,6 @@ export async function index(req: Request, res: Response): Promise<Response> {
   try {
     const paymentMethodCategories = await getPaymentMethodCategories(null);
 
-    console.log({
-      status_code: 200,
-      results: paymentMethodCategories,
-      errors: [],
-    });
-
     return res.status(200).send({
       status_code: 200,
       results: paymentMethodCategories,

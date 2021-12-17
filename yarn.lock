@@ -2904,10 +2904,10 @@ cryptic-base@^1.9.0:
     pg-hstore "^2.3.3"
     sequelize "^6.5.0"
 
-cryptic-base@^1.9.4:
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/cryptic-base/-/cryptic-base-1.9.4.tgz#1f44ae6dd125de490a2bb2d8d8d370dc510cf010"
-  integrity sha512-YMYzaeq7lZB+wcCfj/BSD8N8fQPvlxB0jVK/y1b8r/34ZcYx/Q7vY0rlii1izkp0jHnkZSFVsfnF2YFhmmmEuQ==
+cryptic-base@^1.9.5:
+  version "1.9.5"
+  resolved "https://registry.yarnpkg.com/cryptic-base/-/cryptic-base-1.9.5.tgz#2c6c225795b5abb7c0976fa6c35cf06f7174a9be"
+  integrity sha512-/VvGOkJr90pbEcFac/5ni62SIib2ZQE+nPb3qRX0uhZc4BOgVwzg258fk+2w/dXEbNp44LowXuEs+3yAAFsz2w==
   dependencies:
     dotenv "^8.2.0"
     mongoose "^5.11.15"

@@ -6,13 +6,16 @@ import {
   getOffersController,
 } from '@controllers/offers';
 
-import { validateInputIndexPagination } from '@middlewares/validators/request/offers';
+import {
+  validateInputIndexPagination,
+  validateGetOffer,
+} from '@middlewares/validators/request/offers';
 
 const router = Router();
 
-router.get('', index);
+router.get('/list', index);
 
-router.post('', getOffersController);
+router.get('', validateGetOffer, getOffersController);
 
 router.get('/pagination', validateInputIndexPagination, indexPagination);
 

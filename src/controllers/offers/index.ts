@@ -1,15 +1,55 @@
 import { Request, Response } from 'express';
 import { getOffers, getOffersPagination } from 'cryptic-base';
-import { sanitize } from 'cryptic-utils';
+import { sanitize, convertWhere } from 'cryptic-utils';
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
-    const offers = await getOffers(null, [
-      'vendor',
-      'cryptocurrency',
-      'fiat',
-      'payment_method',
-    ]);
+    const {
+      id,
+      vendor_id,
+      cryptocurrency_id,
+      payment_method_id,
+      fiat_id,
+      payment_method_type,
+      trade_pricing_type,
+      trade_pricing_list_at,
+      trade_pricing_trade_limits_min,
+      trade_pricing_trade_limits_max,
+      trade_pricing_time_limit,
+      trade_instructions_tags,
+      trade_instructions_label,
+      trade_instructions_terms,
+      trade_instructions_instructions,
+      is_deleted,
+      when_deleted,
+      created_at,
+      updated_at,
+      associations,
+      limit,
+    } = req.query;
+
+    // @ts-ignore
+    const offers = await getOffers(limit, associations, {
+      id,
+      vendor_id,
+      cryptocurrency_id,
+      payment_method_id,
+      fiat_id,
+      payment_method_type,
+      trade_pricing_type,
+      trade_pricing_list_at,
+      trade_pricing_trade_limits_min,
+      trade_pricing_trade_limits_max,
+      trade_pricing_time_limit,
+      trade_instructions_tags,
+      trade_instructions_label,
+      trade_instructions_terms,
+      trade_instructions_instructions,
+      is_deleted,
+      when_deleted,
+      created_at,
+      updated_at,
+    });
 
     return res.status(200).send({
       status_code: 200,
@@ -31,7 +71,7 @@ export async function indexPagination(
 ): Promise<Response> {
   const { limit, skip, payment_method_type } = req.query;
 
-  const cleanQuery = sanitize({ limit, skip, payment_method_type });
+  const cleanQuery = sanitize({ limit, skip, payment_method_type }, []);
 
   try {
     const offers = await getOffersPagination(
@@ -59,76 +99,37 @@ export async function getOffersController(
   req: Request,
   res: Response,
 ): Promise<Response> {
-  const {
-    id,
-    vendor_id,
-    cryptocurrency_id,
-    payment_method_id,
-    fiat_id,
-    payment_method_type,
-    trade_pricing_type,
-    trade_pricing_list_at,
-    trade_pricing_trade_limits_min,
-    trade_pricing_trade_limits_max,
-    trade_pricing_time_limit,
-    trade_instructions_tags,
-    trade_instructions_label,
-    trade_instructions_terms,
-    trade_instructions_instructions,
-    is_deleted,
-    when_deleted,
-    created_at,
-    updated_at,
-  } = req.body;
+  const { trade_instructions_tags, associations } = req.query;
 
   try {
-    const cleanReqBody = sanitize({
-      id,
-      vendor_id,
-      cryptocurrency_id,
-      payment_method_id,
-      fiat_id,
-      payment_method_type,
-      trade_pricing_type,
-      trade_pricing_list_at,
-      trade_pricing_trade_limits_min,
-      trade_pricing_trade_limits_max,
-      trade_pricing_time_limit,
-      trade_instructions_label,
-      trade_instructions_terms,
-      trade_instructions_instructions,
-      is_deleted,
-      when_deleted,
-      created_at,
-      updated_at,
-    });
+    const cleanReqQuery = sanitize(
+      {
+        ...req.query,
+      },
+      [],
+    );
 
-    const tags = sanitize(trade_instructions_tags);
+    if (trade_instructions_tags) {
+      // @ts-ignore
+      const tags = sanitize(trade_instructions_tags.split(','), []);
+      cleanReqQuery.trade_instructions_tags = tags;
+    }
+
+    if (associations) {
+      // @ts-ignore
+      const associationsArr = sanitize(associations.split(','), []);
+      cleanReqQuery.associations = associationsArr;
+    } else {
+      cleanReqQuery.associations = [];
+    }
+
+    const where = convertWhere({ ...cleanReqQuery }, ['limit', 'associations']);
 
     const offers = await getOffers(
-      null,
-      ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
+      cleanReqQuery.limit,
+      cleanReqQuery.associations,
       {
-        id: BigInt(cleanReqBody.id),
-        vendor_id: BigInt(cleanReqBody.vendor_id),
-        cryptocurrency_id: BigInt(cleanReqBody.cryptocurrency_id),
-        payment_method_type: cleanReqBody.payment_method_type,
-        payment_method_id: BigInt(cleanReqBody.payment_method_id),
-        fiat_id: BigInt(cleanReqBody.fiat_id),
-        trade_pricing_type: cleanReqBody.trade_pricing_type,
-        trade_pricing_list_at: Number(cleanReqBody.trade_pricing_list_at),
-        trade_pricing_trade_limits_min: Number(
-          cleanReqBody.trade_pricing_trade_limits_min,
-        ),
-        trade_pricing_trade_limits_max: Number(
-          cleanReqBody.trade_pricing_trade_limits_max,
-        ),
-        trade_pricing_time_limit: Number(cleanReqBody.trade_pricing_time_limit),
-        trade_instructions_tags: tags,
-        trade_instructions_label: cleanReqBody.trade_instructions_label,
-        trade_instructions_terms: cleanReqBody.trade_instructions_terms,
-        trade_instructions_instructions:
-          cleanReqBody.trade_instructions_instructions,
+        ...where,
       },
     );
 

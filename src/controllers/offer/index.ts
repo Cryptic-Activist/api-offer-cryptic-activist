@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { createOffer, getOffer } from 'cryptic-base';
-import { sanitize } from 'cryptic-utils';
+import { sanitize, convertWhere } from 'cryptic-utils';
 
-import { ICreateOffer, IOffer } from '../../interfaces/controllers/offer/index';
+import { ICreateOffer } from '../../interfaces/controllers/offer/index';
 
 export async function createOfferController(
   req: Request,
@@ -26,23 +26,26 @@ export async function createOfferController(
   }: ICreateOffer = req.body;
 
   try {
-    const cleanReqBody = sanitize({
-      vendor_id,
-      cryptocurrency_id,
-      payment_method_id,
-      fiat_id,
-      payment_method_type,
-      trade_pricing_type,
-      trade_pricing_list_at,
-      trade_pricing_trade_limits_min,
-      trade_pricing_trade_limits_max,
-      trade_pricing_time_limit,
-      trade_instructions_label,
-      trade_instructions_terms,
-      trade_instructions_instructions,
-    });
+    const cleanReqBody = sanitize(
+      {
+        vendor_id,
+        cryptocurrency_id,
+        payment_method_id,
+        fiat_id,
+        payment_method_type,
+        trade_pricing_type,
+        trade_pricing_list_at,
+        trade_pricing_trade_limits_min,
+        trade_pricing_trade_limits_max,
+        trade_pricing_time_limit,
+        trade_instructions_label,
+        trade_instructions_terms,
+        trade_instructions_instructions,
+      },
+      [],
+    );
 
-    const tags = sanitize(trade_instructions_tags);
+    const tags = sanitize(trade_instructions_tags, []);
 
     const newOffer = await createOffer({
       vendor_id: BigInt(cleanReqBody.vendor_id),
@@ -84,91 +87,38 @@ export async function getOfferController(
   req: Request,
   res: Response,
 ): Promise<Response> {
-  const {
-    id,
-    vendor_id,
-    cryptocurrency_id,
-    payment_method_id,
-    fiat_id,
-    payment_method_type,
-    trade_pricing_type,
-    trade_pricing_list_at,
-    trade_pricing_trade_limits_min,
-    trade_pricing_trade_limits_max,
-    trade_pricing_time_limit,
-    trade_instructions_tags,
-    trade_instructions_label,
-    trade_instructions_terms,
-    trade_instructions_instructions,
-    is_deleted,
-    when_deleted,
-    created_at,
-    updated_at,
-  } = req.body;
+  const { trade_instructions_tags, associations } = req.query;
 
   try {
-    const cleanReqBody = sanitize({
-      id,
-      vendor_id,
-      cryptocurrency_id,
-      payment_method_id,
-      fiat_id,
-      payment_method_type,
-      trade_pricing_type,
-      trade_pricing_list_at,
-      trade_pricing_trade_limits_min,
-      trade_pricing_trade_limits_max,
-      trade_pricing_time_limit,
-      trade_instructions_label,
-      trade_instructions_terms,
-      trade_instructions_instructions,
-      is_deleted,
-      when_deleted,
-      created_at,
-      updated_at,
-    });
-
-    const tags = sanitize(trade_instructions_tags);
-
-    const offer = await getOffer(cleanReqBody, [
-      'vendor',
-      'cryptocurrency',
-      'fiat',
-      'payment_method',
-    ]);
-
-    const offerResponse: IOffer = {
-      id: offer.id,
-      payment_method_type: offer.payment_method_type,
-      trade_instructions_instructions: offer.trade_instructions_instructions,
-      trade_instructions_label: offer.trade_instructions_label,
-      trade_instructions_tags: tags,
-      trade_instructions_terms: offer.trade_instructions_terms,
-      trade_pricing_list_at: offer.trade_pricing_list_at,
-      trade_pricing_time_limit: offer.trade_pricing_time_limit,
-      trade_pricing_trade_limits_max: offer.trade_pricing_trade_limits_max,
-      trade_pricing_trade_limits_min: offer.trade_pricing_trade_limits_min,
-      trade_pricing_type: offer.trade_pricing_type,
-      cryptocurrency: {
-        id: offer.cryptocurrency.id,
-        icon: offer.cryptocurrency.icon,
-        name: offer.cryptocurrency.name,
-        symbol: offer.cryptocurrency.symbol,
+    const cleanReqQuery = sanitize(
+      {
+        ...req.query,
       },
-      fiat: {
-        id: offer.fiat.id,
-        name: offer.fiat.name,
-        symbol: offer.fiat.symbol,
+      [],
+    );
+
+    if (trade_instructions_tags) {
+      // @ts-ignore
+      const tags = sanitize(trade_instructions_tags.split(','), []);
+      cleanReqQuery.trade_instructions_tags = tags;
+    }
+
+    if (associations) {
+      // @ts-ignore
+      const associationsArr = sanitize(associations.split(','), []);
+      cleanReqQuery.associations = associationsArr;
+    } else {
+      cleanReqQuery.associations = [];
+    }
+
+    const where = convertWhere({ ...cleanReqQuery }, ['limit', 'associations']);
+
+    const offer = await getOffer(
+      {
+        ...where,
       },
-      vendor: {
-        id: offer.vendor.id,
-        username: offer.vendor.username,
-        names: {
-          first_name: offer.vendor.first_name,
-          last_name: offer.vendor.last_name,
-        },
-      },
-    };
+      cleanReqQuery.associations,
+    );
 
     if (!offer) {
       return res.status(204).send({
@@ -180,7 +130,7 @@ export async function getOfferController(
 
     return res.status(200).send({
       status_code: 200,
-      results: offerResponse,
+      results: offer,
       errors: [],
     });
   } catch (err) {

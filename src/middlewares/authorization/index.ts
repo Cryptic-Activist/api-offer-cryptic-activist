@@ -7,17 +7,11 @@ export async function authenticateUser(
   next: NextFunction,
 ): Promise<Response> {
   try {
-    console.log(
-      `${process.env.USER_API_ENDPOINT}/user/authorization/authorize`,
-    );
-
     const data = await fetcherAuth(
       `${process.env.USER_API_ENDPOINT}/user/authorization/authorize`,
       'GET',
       req.headers.authorization,
     );
-
-    console.log('data user:', data);
 
     if (data.status_code === 200) {
       next();
