@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createOffer, getOffer } from 'cryptic-base';
+import { createOffer, getOffer, safeOfferValuesAssigner } from 'cryptic-base';
 import { sanitize, convertWhere } from 'cryptic-utils';
 
 import { ICreateOffer } from '../../interfaces/controllers/offer/index';
@@ -128,12 +128,17 @@ export async function getOfferController(
       });
     }
 
+    const safeOffer = safeOfferValuesAssigner(offer);
+
+    console.log('safeOffer:', safeOffer);
+
     return res.status(200).send({
       status_code: 200,
-      results: offer,
+      results: safeOffer,
       errors: [],
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).send({
       status_code: 500,
       results: {},
