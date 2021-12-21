@@ -25,7 +25,7 @@ router.post(
 
 router.get(
   '/:categoryId/all',
-  authenticateUser,
+  // authenticateUser,
   validateInputGetPaymentMethodsByCategory,
   getPaymentMethodsByCategoryController,
 );

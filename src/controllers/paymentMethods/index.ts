@@ -1,11 +1,34 @@
 import { Request, Response } from 'express';
-import { createPaymentMethod, getPaymentMethodsByCategory } from 'cryptic-base';
-import { sanitize } from 'cryptic-utils';
+import {
+  createPaymentMethod,
+  getPaymentMethods,
+  getPaymentMethodsByCategory,
+} from 'cryptic-base';
+import { convertWhere, sanitize, sanitizeQueryArray } from 'cryptic-utils';
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
-    // console.log(req);
+    const { associations } = req.query;
+
+    const cleanReqQuery = sanitize({ ...req.query }, []);
+
+    cleanReqQuery.associations = sanitizeQueryArray(associations);
+
+    const where = convertWhere({ ...cleanReqQuery }, ['associations']);
+
+    const paymentMethods = await getPaymentMethods(
+      null,
+      cleanReqQuery.associations,
+      { ...where },
+    );
+
+    return res.status(200).send({
+      status_code: 200,
+      results: paymentMethods,
+      errors: [],
+    });
   } catch (err) {
+    console.log(err);
     return res.status(500).send({
       status_code: 500,
       results: {},
