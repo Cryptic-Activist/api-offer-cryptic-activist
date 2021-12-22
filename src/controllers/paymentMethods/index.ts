@@ -28,7 +28,6 @@ export async function index(req: Request, res: Response): Promise<Response> {
       errors: [],
     });
   } catch (err) {
-    console.log(err);
     return res.status(500).send({
       status_code: 500,
       results: {},

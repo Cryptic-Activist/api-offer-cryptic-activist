@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
-import { getOffers, getOffersPagination } from 'cryptic-base';
+import {
+  getOffers,
+  getOffersPagination,
+  safeOfferValuesAssigner,
+} from 'cryptic-base';
 import { sanitize, convertWhere } from 'cryptic-utils';
 
 export async function index(req: Request, res: Response): Promise<Response> {
@@ -69,21 +73,45 @@ export async function indexPagination(
   req: Request,
   res: Response,
 ): Promise<Response> {
-  const { limit, skip, payment_method_type } = req.query;
-
-  const cleanQuery = sanitize({ limit, skip, payment_method_type }, []);
-
   try {
+    const { associations } = req.query;
+
+    const cleanReqQuery = sanitize({ ...req.query }, []);
+
+    if (associations) {
+      // @ts-ignore
+      const associationsArr = sanitize(associations.split(','), []);
+      cleanReqQuery.associations = associationsArr;
+    } else {
+      cleanReqQuery.associations = [];
+    }
+
+    const where = convertWhere({ ...cleanReqQuery }, [
+      'limit',
+      'skip',
+      'associations',
+    ]);
+
     const offers = await getOffersPagination(
-      Number(cleanQuery.limit),
-      Number(cleanQuery.skip),
+      Number(cleanReqQuery.limit),
+      Number(cleanReqQuery.skip),
       ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
-      { payment_method_type: cleanQuery.payment_method_type },
+      { ...where },
     );
+
+    if (!offers) {
+      return res.status(204).send({
+        status_code: 204,
+        results: [],
+        errors: [],
+      });
+    }
+
+    const safeOffers = offers.map((offer) => safeOfferValuesAssigner(offer));
 
     return res.status(200).send({
       status_code: 200,
-      results: offers,
+      results: safeOffers,
       errors: [],
     });
   } catch (err) {
