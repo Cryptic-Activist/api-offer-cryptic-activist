@@ -5,16 +5,21 @@ import {
   createPaymentMethodCategoryController,
 } from '@controllers/paymentMethods/categories';
 
-import { authenticateUser } from '@middlewares/authorization';
+// import { authenticateUser } from '@middlewares/authorization';
 import { validateInputCreatePaymentMethodCategory } from '@middlewares/validators/request';
 
 const router = Router();
 
 router.get('', index);
 
+// router.post(
+//   '/create',
+//   authenticateUser,
+//   validateInputCreatePaymentMethodCategory,
+//   createPaymentMethodCategoryController,
+// );
 router.post(
   '/create',
-  authenticateUser,
   validateInputCreatePaymentMethodCategory,
   createPaymentMethodCategoryController,
 );
