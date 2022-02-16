@@ -8,13 +8,16 @@ export async function createFeedbackController(
 ): Promise<Response> {
   const { vendor_id, user_id, offer_id, message, type } = req.body;
 
-  const cleanReqBody = sanitize({
-    vendor_id,
-    user_id,
-    offer_id,
-    message,
-    type,
-  });
+  const cleanReqBody = sanitize(
+    {
+      vendor_id,
+      user_id,
+      offer_id,
+      message,
+      type,
+    },
+    [],
+  );
 
   try {
     // @ts-ignore

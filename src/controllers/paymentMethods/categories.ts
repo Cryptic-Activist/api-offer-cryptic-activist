@@ -30,7 +30,7 @@ export async function createPaymentMethodCategoryController(
   try {
     const { name } = req.body;
 
-    const cleanName = sanitize(name);
+    const cleanName = sanitize({ name }, []);
 
     const newPaymentMethodCategory = await createPaymentMethodCategory({
       name: cleanName,

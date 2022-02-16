@@ -45,6 +45,8 @@ export async function createOfferController(
       [],
     );
 
+    console.log(req.body);
+
     const tags = sanitize(trade_instructions_tags, []);
 
     const newOffer = await createOffer({

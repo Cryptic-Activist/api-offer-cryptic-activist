@@ -13,14 +13,17 @@ export async function countFeedbacksController(
   const { id, vendor_id, user_id, offer_id, message, type } = req.body;
 
   try {
-    const cleanReqBody = sanitize({
-      id,
-      vendor_id,
-      user_id,
-      offer_id,
-      message,
-      type,
-    });
+    const cleanReqBody = sanitize(
+      {
+        id,
+        vendor_id,
+        user_id,
+        offer_id,
+        message,
+        type,
+      },
+      [],
+    );
 
     // @ts-ignore
     const counts = await countFeedbacks(cleanReqBody);
@@ -69,17 +72,23 @@ export async function indexFeedbacksPagination(
     const { limit, skip } = req.query;
     const { vendor_id, user_id, offer_id, message, type } = req.body;
 
-    const cleanReqQuery = sanitize({
-      limit: limit.toString(),
-      skip: skip.toString(),
-    });
-    const cleanReqBody = sanitize({
-      vendor_id,
-      user_id,
-      offer_id,
-      message,
-      type,
-    });
+    const cleanReqQuery = sanitize(
+      {
+        limit: limit.toString(),
+        skip: skip.toString(),
+      },
+      [],
+    );
+    const cleanReqBody = sanitize(
+      {
+        vendor_id,
+        user_id,
+        offer_id,
+        message,
+        type,
+      },
+      [],
+    );
 
     const feedbacks = await getFeedbacksPagination(
       cleanReqQuery.limit,
