@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createOffer, getOffer, safeOfferValuesAssigner } from 'cryptic-base';
+import { createOffer, getOffer, safeOfferValuesAssigner } from 'base-ca';
 import { sanitize, convertWhere } from 'cryptic-utils';
 
 import { ICreateOffer } from '../../interfaces/controllers/offer/index';

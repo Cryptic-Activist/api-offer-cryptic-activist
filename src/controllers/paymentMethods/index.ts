@@ -3,7 +3,7 @@ import {
   createPaymentMethod,
   getPaymentMethods,
   getPaymentMethodsByCategory,
-} from 'cryptic-base';
+} from 'base-ca';
 import { convertWhere, sanitize, sanitizeQueryArray } from 'cryptic-utils';
 
 export async function index(req: Request, res: Response): Promise<Response> {

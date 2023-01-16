@@ -2904,17 +2904,6 @@ cryptic-base@^1.9.0:
     pg-hstore "^2.3.3"
     sequelize "^6.5.0"
 
-cryptic-base@^1.9.5:
-  version "1.9.5"
-  resolved "https://registry.yarnpkg.com/cryptic-base/-/cryptic-base-1.9.5.tgz#2c6c225795b5abb7c0976fa6c35cf06f7174a9be"
-  integrity sha512-/VvGOkJr90pbEcFac/5ni62SIib2ZQE+nPb3qRX0uhZc4BOgVwzg258fk+2w/dXEbNp44LowXuEs+3yAAFsz2w==
-  dependencies:
-    dotenv "^8.2.0"
-    mongoose "^5.11.15"
-    pg "^8.5.1"
-    pg-hstore "^2.3.3"
-    sequelize "^6.5.0"
-
 cryptic-utils@^1.2.1:
   version "1.3.10"
   resolved "https://registry.yarnpkg.com/cryptic-utils/-/cryptic-utils-1.3.10.tgz#31e4cfa1ada3f0adb910c19f8d83c4cef2bda0ff"

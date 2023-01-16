@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import {
   getPaymentMethodCategories,
   createPaymentMethodCategory,
-} from 'cryptic-base';
+} from 'base-ca';
 import { sanitize } from 'cryptic-utils';
 
 export async function index(req: Request, res: Response): Promise<Response> {

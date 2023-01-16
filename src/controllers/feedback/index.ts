@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createFeedback } from 'cryptic-base';
+import { createFeedback } from 'base-ca';
 import { sanitize } from 'cryptic-utils';
 
 export async function createFeedbackController(

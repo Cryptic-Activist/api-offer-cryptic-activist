@@ -1,9 +1,5 @@
 import { Request, Response } from 'express';
-import {
-  countFeedbacks,
-  getFeedbacks,
-  getFeedbacksPagination,
-} from 'cryptic-base';
+import { countFeedbacks, getFeedbacks, getFeedbacksPagination } from 'base-ca';
 import { sanitize } from 'cryptic-utils';
 
 export async function countFeedbacksController(

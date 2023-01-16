@@ -1,8 +1,5 @@
 import { Request, Response } from 'express';
-import {
-  getPaymentMethod,
-  safePaymentMethodValuesAssigner,
-} from 'cryptic-base';
+import { getPaymentMethod, safePaymentMethodValuesAssigner } from 'base-ca';
 import { convertWhere, sanitize, sanitizeQueryArray } from 'cryptic-utils';
 
 export const getPaymentMethodController = async (

@@ -3,7 +3,7 @@ import {
   getOffers,
   getOffersPagination,
   safeOfferValuesAssigner,
-} from 'cryptic-base';
+} from 'base-ca';
 import { sanitize, convertWhere } from 'cryptic-utils';
 
 export async function index(req: Request, res: Response): Promise<Response> {
