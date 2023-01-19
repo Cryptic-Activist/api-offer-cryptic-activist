@@ -4,6 +4,7 @@ import {
   indexFeedbacks,
   countFeedbacksController,
   indexFeedbacksPagination,
+  getFeedbacksByUser,
 } from '@controllers/feedbacks';
 
 import { validateInputCountFeedbacks } from '@middlewares/validators/request/feedbacks';
@@ -11,6 +12,8 @@ import { validateInputCountFeedbacks } from '@middlewares/validators/request/fee
 const router = Router();
 
 router.post('', indexFeedbacks);
+
+router.get('/user/:userId', getFeedbacksByUser);
 
 router.post('/count', validateInputCountFeedbacks, countFeedbacksController);
 

@@ -107,3 +107,24 @@ export async function indexFeedbacksPagination(
     });
   }
 }
+
+export const getFeedbacksByUser = async (req: Request, res: Response) => {
+  try {
+    const { params } = req;
+    const { userId } = params;
+
+    const feedbacks = await getFeedbacks({ vendorId: userId });
+
+    return res.status(200).send({
+      status_code: 200,
+      results: feedbacks,
+      errors: [],
+    });
+  } catch (error) {
+    return res.status(500).send({
+      status_code: 500,
+      results: {},
+      errors: [error.message],
+    });
+  }
+};

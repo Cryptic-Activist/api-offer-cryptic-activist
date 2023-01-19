@@ -182,3 +182,33 @@ export async function getOffersController(
     });
   }
 }
+
+export const getOffersByUser = async (req: Request, res: Response) => {
+  const { query, params } = req;
+  const { vendorId } = params;
+  const { associations } = query;
+
+  const offers = await getOffers(
+    {
+      cryptocurrency: true,
+      fiat: true,
+      payment_method: true,
+      vendor: true,
+    },
+    { vendorId },
+  );
+
+  try {
+    return res.status(200).send({
+      status_code: 200,
+      results: offers,
+      errors: [],
+    });
+  } catch (error) {
+    return res.status(500).send({
+      status_code: 500,
+      results: {},
+      errors: [error.message],
+    });
+  }
+};
