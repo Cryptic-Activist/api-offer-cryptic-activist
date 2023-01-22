@@ -188,17 +188,17 @@ export const getOffersByUser = async (req: Request, res: Response) => {
   const { vendorId } = params;
   const { associations } = query;
 
-  const offers = await getOffers(
-    {
-      cryptocurrency: true,
-      fiat: true,
-      payment_method: true,
-      vendor: true,
-    },
-    { vendorId },
-  );
-
   try {
+    const offers = await getOffers(
+      {
+        cryptocurrency: true,
+        fiat: true,
+        paymentMethod: true,
+        vendor: true,
+      },
+      { vendorId },
+    );
+
     return res.status(200).send({
       status_code: 200,
       results: offers,
