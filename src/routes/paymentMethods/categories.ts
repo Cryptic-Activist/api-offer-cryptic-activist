@@ -20,7 +20,7 @@ router.get('', index);
 // );
 router.post(
   '/create',
-  validateInputCreatePaymentMethodCategory,
+  // validateInputCreatePaymentMethodCategory,
   createPaymentMethodCategoryController,
 );
 

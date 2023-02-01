@@ -5,27 +5,11 @@ export function validateInputCreatePaymentMethod(
   req: Request,
   res: Response,
   next: NextFunction,
-): NextFunction | Response {
-  const { name, categoryId } = req.body;
+): NextFunction | void {
+  const { name, paymentMethodCategory } = req.body;
+  const { id } = paymentMethodCategory;
 
-  const errors: string[] = validate(
-    {
-      name,
-      categoryId,
-    },
-    {
-      name: 'string',
-      categoryId: 'string',
-    },
-  );
-
-  if (errors.length > 0) {
-    return res.status(400).send({
-      status_code: 400,
-      results: {},
-      errors,
-    });
-  }
+  console.log(req.body);
 
   next();
 }

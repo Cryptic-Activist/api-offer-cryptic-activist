@@ -7,7 +7,7 @@ import { sanitize } from 'cryptic-utils';
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
-    const paymentMethodCategories = await getPaymentMethodCategories(null);
+    const paymentMethodCategories = await getPaymentMethodCategories();
 
     return res.status(200).send({
       status_code: 200,
@@ -30,10 +30,8 @@ export async function createPaymentMethodCategoryController(
   try {
     const { name } = req.body;
 
-    const cleanName = sanitize({ name }, []);
-
     const newPaymentMethodCategory = await createPaymentMethodCategory({
-      name: cleanName,
+      name,
     });
 
     return res.status(200).send({
@@ -42,10 +40,11 @@ export async function createPaymentMethodCategoryController(
       errors: [],
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).send({
       status_code: 500,
       results: {},
-      errors: [err.message],
+      errors: err,
     });
   }
 }

@@ -10,17 +10,11 @@ export async function index(req: Request, res: Response): Promise<Response> {
   try {
     const { associations } = req.query;
 
-    const cleanReqQuery = sanitize({ ...req.query }, []);
-
-    cleanReqQuery.associations = sanitizeQueryArray(associations);
-
-    const where = convertWhere({ ...cleanReqQuery }, ['associations']);
-
-    const paymentMethods = await getPaymentMethods(
-      null,
-      cleanReqQuery.associations,
-      { ...where },
-    );
+    const paymentMethods = await getPaymentMethods({
+      offers: false,
+      paymentMethodCategory: false,
+      _count: false,
+    });
 
     return res.status(200).send({
       status_code: 200,
@@ -28,6 +22,7 @@ export async function index(req: Request, res: Response): Promise<Response> {
       errors: [],
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).send({
       status_code: 500,
       results: {},
@@ -41,13 +36,12 @@ export async function createPaymentMethodController(
   res: Response,
 ): Promise<Response> {
   try {
-    const { name, categoryId } = req.body;
-
-    const cleanBody = sanitize({ name, categoryId }, []);
+    const { name, paymentMethodCategory } = req.body;
+    const { id } = paymentMethodCategory;
 
     const newPaymentMethod = await createPaymentMethod({
-      name: cleanBody.name,
-      payment_method_category_id: BigInt(cleanBody.categoryId),
+      name,
+      paymentMethodCategoryId: id,
     });
 
     return res.status(200).send({
