@@ -1,10 +1,6 @@
+import { createPaymentMethod, getPaymentMethods } from 'base-ca';
+import { sanitize } from 'cryptic-utils';
 import { Request, Response } from 'express';
-import {
-  createPaymentMethod,
-  getPaymentMethods,
-  getPaymentMethodsByCategory,
-} from 'base-ca';
-import { convertWhere, sanitize, sanitizeQueryArray } from 'cryptic-utils';
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
@@ -67,10 +63,15 @@ export async function getPaymentMethodsByCategoryController(
 
     const cleanCategoryId = sanitize(categoryId, []);
 
-    const paymentMethods = await getPaymentMethodsByCategory(
-      null,
-      { id: BigInt(cleanCategoryId) },
-      [],
+    const paymentMethods = await getPaymentMethods(
+      {
+        _count: false,
+        offers: false,
+        paymentMethodCategory: false,
+      },
+      {
+        paymentMethodCategoryId: cleanCategoryId,
+      },
     );
 
     return res.status(200).send({
