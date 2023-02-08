@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export const validateOffersIndex = (
   req: Request,
@@ -257,6 +257,8 @@ export function validateInputCreateOffer(
     trade_instructions_terms,
     trade_instructions_instructions,
   } = req.body;
+
+  console.log(req.body);
 
   const errors: string[] = [];
 

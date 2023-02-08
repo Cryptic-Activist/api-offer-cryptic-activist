@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
 import { countFeedbacks, getFeedbacks, getFeedbacksPagination } from 'base-ca';
 import { sanitize } from 'cryptic-utils';
+import { Request, Response } from 'express';
 
 export async function countFeedbacksController(
   req: Request,

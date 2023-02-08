@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
 import { fetcherAuth } from 'cryptic-utils';
+import { NextFunction, Request, Response } from 'express';
 
 export async function authenticateUser(
   req: Request,
@@ -8,7 +8,7 @@ export async function authenticateUser(
 ): Promise<Response> {
   try {
     const data = await fetcherAuth(
-      `${process.env.USER_API_ENDPOINT}/user/authorization/authorize`,
+      `${process.env.USER_API_ENDPOINT}/users/authorization/authorize`,
       'GET',
       req.headers.authorization,
     );
