@@ -1,5 +1,4 @@
-import { createOffer, getOffer, safeOfferValuesAssigner } from 'base-ca';
-import { convertWhere, sanitize } from 'cryptic-utils';
+import { createOffer, getOffer } from 'base-ca';
 import { Request, Response } from 'express';
 
 export async function createOfferController(
@@ -36,54 +35,66 @@ export async function getOfferController(
   req: Request,
   res: Response,
 ): Promise<Response> {
-  const { trade_instructions_tags, associations } = req.query;
-
   try {
-    const cleanReqQuery = sanitize(
-      {
-        ...req.query,
-      },
-      [],
-    );
+    const { query } = req;
+    const { id, associations } = query;
 
-    if (trade_instructions_tags) {
-      // @ts-ignore
-      const tags = sanitize(trade_instructions_tags.split(','), []);
-      cleanReqQuery.trade_instructions_tags = tags;
-    }
+    const associationsArr = associations?.toString().split(',');
+    const associationObj: any = {};
 
-    if (associations) {
-      // @ts-ignore
-      const associationsArr = sanitize(associations.split(','), []);
-      cleanReqQuery.associations = associationsArr;
-    } else {
-      cleanReqQuery.associations = [];
-    }
+    associationsArr?.forEach((association) => {
+      associationObj[association] = true;
+    });
 
-    const where = convertWhere({ ...cleanReqQuery }, ['limit', 'associations']);
+    console.log({ id });
 
-    const offer = await getOffer(
-      {
-        ...where,
-      },
-      cleanReqQuery.associations,
-    );
+    const offer = await getOffer({ id: id?.toString() }, associationObj);
 
-    if (!offer) {
-      return res.status(204).send({
-        status_code: 204,
-        results: {},
-        errors: [],
-      });
-    }
+    //   const cleanReqQuery = sanitize(
+    //     {
+    //       ...req.query,
+    //     },
+    //     [],
+    //   );
 
-    const safeOffer = safeOfferValuesAssigner(offer);
+    //   if (trade_instructions_tags) {
+    //     // @ts-ignore
+    //     const tags = sanitize(trade_instructions_tags.split(','), []);
+    //     cleanReqQuery.trade_instructions_tags = tags;
+    //   }
 
-    console.log('safeOffer:', safeOffer);
+    //   if (associations) {
+    //     // @ts-ignore
+    //     const associationsArr = sanitize(associations.split(','), []);
+    //     cleanReqQuery.associations = associationsArr;
+    //   } else {
+    //     cleanReqQuery.associations = [];
+    //   }
+
+    //   const where = convertWhere({ ...cleanReqQuery }, ['limit', 'associations']);
+
+    //   const offer = await getOffer(
+    //     {
+    //       ...where,
+    //     },
+    //     cleanReqQuery.associations,
+    //   );
+
+    //   if (!offer) {
+    //     return res.status(204).send({
+    //       status_code: 204,
+    //       results: {},
+    //       errors: [],
+    //     });
+    //   }
+
+    //   const safeOffer = safeOfferValuesAssigner(offer);
+
+    //   console.log('safeOffer:', safeOffer);
 
     return res.status(200).send({
       status_code: 200,
-      results: safeOffer,
+      results: offer,
       errors: [],
     });
   } catch (err) {
