@@ -1,32 +1,39 @@
-import { fetcherAuth } from 'cryptic-utils';
 import { NextFunction, Request, Response } from 'express';
+import { getAuth } from '../../services/auth';
+import { AuthenticateUser } from './zod';
 
-export async function authenticateUser(
+export const authenticateUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
-): Promise<Response> {
+) => {
   try {
-    const data = await fetcherAuth(
-      `${process.env.USER_API_ENDPOINT}/users/authorization/authorize`,
-      'GET',
-      req.headers.authorization,
-    );
+    const { headers } = req;
+    const { authorization } = headers;
 
-    if (data.status_code === 200) {
-      next();
-    } else {
+    const authorized = AuthenticateUser.safeParse(authorization);
+
+    if (!authorized.success) {
       return res.status(401).send({
         status_code: 401,
-        results: {},
-        errors: [],
+        // @ts-ignore
+        errors: authorized.error,
       });
     }
+    // @ts-ignore
+    const auth = await getAuth(authorization);
+
+    if (!auth) {
+      return res.status(401).send({
+        status_code: 401,
+      });
+    }
+
+    next();
   } catch (err) {
     return res.status(401).send({
       status_code: 401,
-      results: {},
       errors: [err.message],
     });
   }
-}
+};
