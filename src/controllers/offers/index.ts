@@ -1,5 +1,5 @@
-import { getOffers } from 'base-ca';
-import { convertWhere, sanitize } from 'cryptic-utils';
+import { getOffers, getOffersPagination } from 'base-ca';
+import { converterToType, convertWhere, sanitize } from 'cryptic-utils';
 import { Request, Response } from 'express';
 
 export async function index(req: Request, res: Response): Promise<Response> {
@@ -65,68 +65,50 @@ export async function index(req: Request, res: Response): Promise<Response> {
   }
 }
 
-export async function indexPagination(
-  req: Request,
-  res: Response,
-): Promise<Response> {
-  console.log({ query: req.query });
+export const indexPagination = async (req: Request, res: Response) => {
+  try {
+    const { query } = req;
 
-  // try {
-  //   const { associations } = req.query;
+    const converted = converterToType({
+      valuesToConvert: { ...query },
+      convertTo: {
+        limit: 'number',
+        paymentMethodType: 'string',
+        skip: 'number',
+      },
+    });
 
-  // const cleanReqQuery = sanitize({ ...req.query }, []);
+    const offers = await getOffersPagination(
+      {
+        cryptocurrency: true,
+        fiat: true,
+        paymentMethod: true,
+        vendor: true,
+      },
+      converted.limit,
+      converted.skip,
+      { paymentMethodType: converted.paymentMethodType },
+    );
 
-  // if (associations) {
-  //   // @ts-ignore
-  //   const associationsArr = sanitize(associations.split(','), []);
-  //   cleanReqQuery.associations = associationsArr;
-  // } else {
-  //   cleanReqQuery.associations = [];
-  // }
+    if (!offers) {
+      return res.status(204).send({
+        status_code: 204,
+      });
+    }
 
-  // const where = convertWhere({ ...cleanReqQuery }, [
-  //   'limit',
-  //   'skip',
-  //   'associations',
-  // ]);
+    return res.status(200).send({
+      status_code: 200,
+      results: offers,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status_code: 500,
+      errors: err,
+    });
+  }
+};
 
-  // const offers = await getOffersPagination(
-  //   Number(cleanReqQuery.limit),
-  //   Number(cleanReqQuery.skip),
-  //   ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
-  //   { ...where },
-  // );
-
-  // if (!offers) {
-  //   return res.status(204).send({
-  //     status_code: 204,
-  //     results: [],
-  //     errors: [],
-  //   });
-  // }
-
-  // const safeOffers = offers.map((offer) => safeOfferValuesAssigner(offer));
-
-  // console.log({ safeOffers });
-
-  return res.status(200).send({
-    status_code: 200,
-    results: [],
-    errors: [],
-  });
-  // } catch (err) {
-  //   return res.status(500).send({
-  //     status_code: 500,
-  //     results: {},
-  //     errors: [err.message],
-  //   });
-  // }
-}
-
-export async function getOffersController(
-  req: Request,
-  res: Response,
-): Promise<Response> {
+export const getOffersController = async (req: Request, res: Response) => {
   console.log(req.query);
   const { trade_instructions_tags, associations } = req.query;
 
@@ -166,23 +148,20 @@ export async function getOffersController(
       return res.status(204).send({
         status_code: 204,
         results: offers,
-        errors: [],
       });
     }
 
     return res.status(200).send({
       status_code: 200,
       results: offers,
-      errors: [],
     });
   } catch (err) {
     return res.status(500).send({
       status_code: 500,
-      results: {},
-      errors: [err.message],
+      errors: err,
     });
   }
-}
+};
 
 export const getOffersByUser = async (req: Request, res: Response) => {
   const { query, params } = req;

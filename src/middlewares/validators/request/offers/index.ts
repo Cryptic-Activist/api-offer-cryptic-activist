@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateOffer } from '../../offers';
 
+import { IndexPagination } from './zod';
+
 export const validateOffersIndex = (
   req: Request,
   res: Response,
@@ -189,50 +191,15 @@ export function validateInputIndexPagination(
   req: Request,
   res: Response,
   next: NextFunction,
-): NextFunction | Response {
-  const { limit, skip, payment_method_type } = req.query;
+) {
+  const { query } = req;
 
-  console.log({ test: req.query });
+  const validated = IndexPagination.safeParse(query);
 
-  const errors: string[] = [];
-
-  if (!limit) {
-    errors.push('limit is required.');
-  } else if (limit.length === 0) {
-    errors.push('limit must be valid.');
-  }
-
-  try {
-    Number(limit);
-  } catch (err) {
-    errors.push('limit must be a number');
-  }
-
-  if (!skip) {
-    errors.push('skip is required.');
-  } else if (skip.length === 0) {
-    errors.push('skip must be valid.');
-  }
-
-  try {
-    Number(skip);
-  } catch (err) {
-    errors.push('skip must be a number');
-  }
-
-  if (!payment_method_type) {
-    errors.push('payment_method_type is required.');
-  } else if (payment_method_type.length === 0) {
-    errors.push('payment_method_type must be valid.');
-  } else if (payment_method_type !== 'buy' && payment_method_type !== 'sell') {
-    errors.push('payment_method_type must be"buy" or "sell".');
-  }
-
-  if (errors.length > 0) {
+  if (!validated.success) {
     return res.status(400).send({
       status_code: 400,
-      results: {},
-      errors,
+      errors: validated.error,
     });
   }
 
@@ -247,15 +214,15 @@ export const validateInputCreateOffer = (
   const { body } = req;
   const validated = CreateOffer.safeParse(body);
 
-  if (validated.success) {
-    next();
-  } else {
+  if (!validated.success) {
     return res.status(400).send({
       status_code: 400,
       results: {},
       errors: validated.error,
     });
   }
+
+  next();
 };
 
 export function validateGetOffer(
