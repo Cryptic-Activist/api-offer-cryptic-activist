@@ -1,12 +1,11 @@
 import { Router } from 'express';
 
 import {
-  index,
   createPaymentMethodCategoryController,
-} from '@controllers/paymentMethods/categories';
+  index,
+} from '../../controllers/paymentMethods/categories';
 
-// import { authenticateUser } from '@middlewares/authorization';
-import { validateInputCreatePaymentMethodCategory } from '@middlewares/validators/request';
+// import { authenticateUser } from '../../middlewares/authorization';
 
 const router = Router();
 

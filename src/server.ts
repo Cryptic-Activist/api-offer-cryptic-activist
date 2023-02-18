@@ -1,6 +1,6 @@
-import { checkEnvironmentVariable, success } from 'cryptic-utils';
 import chalk from 'chalk';
-import requiredEnv from '@/envs.json';
+import { checkEnvironmentVariable, success } from 'cryptic-utils';
+import requiredEnv from '../envs.json';
 
 import app from './app';
 

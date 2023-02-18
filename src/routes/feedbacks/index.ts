@@ -1,13 +1,13 @@
 import { Router } from 'express';
 
 import {
-  indexFeedbacks,
   countFeedbacksController,
-  indexFeedbacksPagination,
   getFeedbacksByUser,
-} from '@controllers/feedbacks';
+  indexFeedbacks,
+  indexFeedbacksPagination,
+} from '../../controllers/feedbacks';
 
-import { validateInputCountFeedbacks } from '@middlewares/validators/request/feedbacks';
+import { validateInputCountFeedbacks } from '../../middlewares/validators/request/feedbacks';
 
 const router = Router();
 

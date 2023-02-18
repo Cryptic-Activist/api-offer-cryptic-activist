@@ -1,16 +1,16 @@
 import { Router } from 'express';
 
 import {
-  index,
   createPaymentMethodController,
   getPaymentMethodsByCategoryController,
-} from '@controllers/paymentMethods';
+  index,
+} from '../../controllers/paymentMethods';
 
-// import { authenticateUser } from '@middlewares/authorization';
+// import { authenticateUser } from '../../middlewares/authorization';
 import {
   validateInputCreatePaymentMethod,
   validateInputGetPaymentMethodsByCategory,
-} from '@middlewares/validators/request/paymentMethods';
+} from '../../middlewares/validators/request/paymentMethods';
 
 const router = Router();
 

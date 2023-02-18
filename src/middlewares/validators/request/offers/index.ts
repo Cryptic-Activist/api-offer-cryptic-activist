@@ -1,5 +1,5 @@
-import { CreateOffer } from '@middlewares/validators/offers';
 import { NextFunction, Request, Response } from 'express';
+import { CreateOffer } from '../../offers';
 
 export const validateOffersIndex = (
   req: Request,
@@ -191,6 +191,8 @@ export function validateInputIndexPagination(
   next: NextFunction,
 ): NextFunction | Response {
   const { limit, skip, payment_method_type } = req.query;
+
+  console.log({ test: req.query });
 
   const errors: string[] = [];
 

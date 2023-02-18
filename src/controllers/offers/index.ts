@@ -1,10 +1,6 @@
+import { getOffers } from 'base-ca';
+import { convertWhere, sanitize } from 'cryptic-utils';
 import { Request, Response } from 'express';
-import {
-  getOffers,
-  getOffersPagination,
-  safeOfferValuesAssigner,
-} from 'base-ca';
-import { sanitize, convertWhere } from 'cryptic-utils';
 
 export async function index(req: Request, res: Response): Promise<Response> {
   try {
@@ -73,60 +69,65 @@ export async function indexPagination(
   req: Request,
   res: Response,
 ): Promise<Response> {
-  try {
-    const { associations } = req.query;
+  console.log({ query: req.query });
 
-    const cleanReqQuery = sanitize({ ...req.query }, []);
+  // try {
+  //   const { associations } = req.query;
 
-    if (associations) {
-      // @ts-ignore
-      const associationsArr = sanitize(associations.split(','), []);
-      cleanReqQuery.associations = associationsArr;
-    } else {
-      cleanReqQuery.associations = [];
-    }
+  // const cleanReqQuery = sanitize({ ...req.query }, []);
 
-    const where = convertWhere({ ...cleanReqQuery }, [
-      'limit',
-      'skip',
-      'associations',
-    ]);
+  // if (associations) {
+  //   // @ts-ignore
+  //   const associationsArr = sanitize(associations.split(','), []);
+  //   cleanReqQuery.associations = associationsArr;
+  // } else {
+  //   cleanReqQuery.associations = [];
+  // }
 
-    const offers = await getOffersPagination(
-      Number(cleanReqQuery.limit),
-      Number(cleanReqQuery.skip),
-      ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
-      { ...where },
-    );
+  // const where = convertWhere({ ...cleanReqQuery }, [
+  //   'limit',
+  //   'skip',
+  //   'associations',
+  // ]);
 
-    if (!offers) {
-      return res.status(204).send({
-        status_code: 204,
-        results: [],
-        errors: [],
-      });
-    }
+  // const offers = await getOffersPagination(
+  //   Number(cleanReqQuery.limit),
+  //   Number(cleanReqQuery.skip),
+  //   ['vendor', 'cryptocurrency', 'fiat', 'payment_method'],
+  //   { ...where },
+  // );
 
-    const safeOffers = offers.map((offer) => safeOfferValuesAssigner(offer));
+  // if (!offers) {
+  //   return res.status(204).send({
+  //     status_code: 204,
+  //     results: [],
+  //     errors: [],
+  //   });
+  // }
 
-    return res.status(200).send({
-      status_code: 200,
-      results: safeOffers,
-      errors: [],
-    });
-  } catch (err) {
-    return res.status(500).send({
-      status_code: 500,
-      results: {},
-      errors: [err.message],
-    });
-  }
+  // const safeOffers = offers.map((offer) => safeOfferValuesAssigner(offer));
+
+  // console.log({ safeOffers });
+
+  return res.status(200).send({
+    status_code: 200,
+    results: [],
+    errors: [],
+  });
+  // } catch (err) {
+  //   return res.status(500).send({
+  //     status_code: 500,
+  //     results: {},
+  //     errors: [err.message],
+  //   });
+  // }
 }
 
 export async function getOffersController(
   req: Request,
   res: Response,
 ): Promise<Response> {
+  console.log(req.query);
   const { trade_instructions_tags, associations } = req.query;
 
   try {

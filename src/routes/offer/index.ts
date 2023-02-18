@@ -1,12 +1,15 @@
 import { Router } from 'express';
 
-import { createOfferController, getOfferController } from '@controllers/offer';
-
-import { authenticateUser } from '@middlewares/authorization';
 import {
-  validateInputCreateOffer,
+  createOfferController,
+  getOfferController,
+} from '../../controllers/offer';
+
+import { authenticateUser } from '../../middlewares/authorization';
+import {
   validateGetOffer,
-} from '@middlewares/validators/request/offers';
+  validateInputCreateOffer,
+} from '../../middlewares/validators/request/offers';
 
 const router = Router();
 
