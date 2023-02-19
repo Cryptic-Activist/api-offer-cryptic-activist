@@ -73,10 +73,22 @@ export const indexPagination = async (req: Request, res: Response) => {
       valuesToConvert: { ...query },
       convertTo: {
         limit: 'number',
-        paymentMethodType: 'string',
         skip: 'number',
+        paymentMethodType: 'string',
+        paymentMethodId: 'string',
+        fiatId: 'string',
+        cryptocurrencyId: 'string',
       },
     });
+
+    const {
+      limit,
+      skip,
+      paymentMethodType,
+      fiatId,
+      cryptocurrencyId,
+      paymentMethodId,
+    } = converted;
 
     const offers = await getOffersPagination(
       {
@@ -85,9 +97,9 @@ export const indexPagination = async (req: Request, res: Response) => {
         paymentMethod: true,
         vendor: true,
       },
-      converted.limit,
-      converted.skip,
-      { paymentMethodType: converted.paymentMethodType },
+      limit,
+      skip,
+      { paymentMethodType, fiatId, cryptocurrencyId, paymentMethodId },
     );
 
     if (!offers) {
@@ -101,6 +113,7 @@ export const indexPagination = async (req: Request, res: Response) => {
       results: offers,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).send({
       status_code: 500,
       errors: err,
