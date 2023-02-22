@@ -179,7 +179,7 @@ export const getOffersController = async (req: Request, res: Response) => {
 export const getOffersByUser = async (req: Request, res: Response) => {
   const { query, params } = req;
   const { vendorId } = params;
-  const { associations } = query;
+  const { type } = query;
 
   try {
     const offers = await getOffers(
@@ -189,18 +189,18 @@ export const getOffersByUser = async (req: Request, res: Response) => {
         paymentMethod: true,
         vendor: true,
       },
-      { vendorId },
+      { vendorId, paymentMethodType: type as string },
     );
+
+    console.log(offers);
 
     return res.status(200).send({
       status_code: 200,
       results: offers,
-      errors: [],
     });
   } catch (error) {
     return res.status(500).send({
       status_code: 500,
-      results: {},
       errors: [error.message],
     });
   }
