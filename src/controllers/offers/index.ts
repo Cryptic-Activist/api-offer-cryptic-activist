@@ -96,6 +96,8 @@ export const indexPagination = async (req: Request, res: Response) => {
         fiat: true,
         paymentMethod: true,
         vendor: true,
+        feedbacks: true,
+        trades: true,
       },
       limit,
       skip,
