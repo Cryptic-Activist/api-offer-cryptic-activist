@@ -31,6 +31,7 @@ export const authenticateUser = async (
 
     next();
   } catch (err) {
+    console.log({ err });
     return res.status(401).send({
       status_code: 401,
       errors: [err.message],
