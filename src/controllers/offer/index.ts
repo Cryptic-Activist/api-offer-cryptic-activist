@@ -22,10 +22,9 @@ export async function createOfferController(
       results: newOffer,
       errors: [],
     });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(500).send({
       status_code: 500,
-      results: {},
       errors: [err.message],
     });
   }
@@ -97,7 +96,7 @@ export async function getOfferController(
       results: offer,
       errors: [],
     });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
     return res.status(500).send({
       status_code: 500,
