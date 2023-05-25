@@ -5,7 +5,6 @@ import {
   getOfferController,
 } from '../../controllers/offer';
 
-import { authenticateUser } from '../../middlewares/authorization';
 import {
   validateGetOffer,
   validateInputCreateOffer,
@@ -17,7 +16,7 @@ router.get('', validateGetOffer, getOfferController);
 
 router.post(
   '/create',
-  authenticateUser,
+  // authenticateUser,
   validateInputCreateOffer,
   createOfferController,
 );
