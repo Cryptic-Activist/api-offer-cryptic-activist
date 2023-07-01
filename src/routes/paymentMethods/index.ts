@@ -6,7 +6,6 @@ import {
   index,
 } from '../../controllers/paymentMethods';
 
-// import { authenticateUser } from '../../middlewares/authorization';
 import {
   validateInputCreatePaymentMethod,
   validateInputGetPaymentMethodsByCategory,
@@ -16,12 +15,6 @@ const router = Router();
 
 router.get('', index);
 
-// router.post(
-//   '/create',
-//   authenticateUser,
-//   validateInputCreatePaymentMethod,
-//   createPaymentMethodController,
-// );
 router.post(
   '/create',
   validateInputCreatePaymentMethod,
