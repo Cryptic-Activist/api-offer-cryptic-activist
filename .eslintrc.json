@@ -1,37 +1,14 @@
 {
   "env": {
-    "browser": true,
-    "commonjs": true,
-    "es2020": true,
-    "jest": true
+    "es2021": true,
+    "node": true
   },
   "extends": ["airbnb-base"],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2020,
+    "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "settings": {
-    "import/resolver": {
-      "typescript": {}
-    }
-  },
-  "rules": {
-    "import/extensions": "off",
-    "object-curly-newline": "off",
-    "consistent-return": "off",
-    "import/prefer-default-export": "off",
-    "linebreak-style": "off",
-    "no-await-in-loop": "off",
-    "no-useless-escape": "off",
-    "camelcase": "off",
-    "operator-linebreak": "off",
-    "implicit-arrow-linebreak": "off",
-    "no-tabs": "off",
-    "no-undef": "off"
-  }
+  "plugins": ["@typescript-eslint"],
+  "rules": {}
 }
